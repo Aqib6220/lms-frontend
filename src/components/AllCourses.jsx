@@ -179,7 +179,7 @@ const AllCourses = () => {
                 image={course.thumbnail || "/placeholder.png"}
                 category={course.category || "General"}
                 heading={course.title || "Untitled Course"}
-                level={course.courseLevel || "Beginner"}
+                level={course.courseLevel || ""}
                 duration={course.duration || "N/A"}
                 link={`/CourseDetails/${course._id}`}
               />

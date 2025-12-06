@@ -486,7 +486,9 @@ const CoursesList = () => {
     // Class filter
     if (classFilter) {
       filtered = filtered.filter((course) =>
-        slugify(course.classLevel || course.category || "").includes(classFilter)
+        slugify(course.classLevel || course.category || "").includes(
+          classFilter
+        )
       );
     }
 
@@ -526,9 +528,7 @@ const CoursesList = () => {
     }
 
     // Default to subject-based sorting so related courses stay grouped
-    filtered.sort((a, b) =>
-      getSubjectKey(a).localeCompare(getSubjectKey(b))
-    );
+    filtered.sort((a, b) => getSubjectKey(a).localeCompare(getSubjectKey(b)));
 
     // Additional sorting selections
     if (sortBy) {
@@ -863,9 +863,14 @@ const CoursesList = () => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     <option value="">All Levels</option>
-                    <option value="beginner">Beginner</option>
-                    <option value="intermediate">Intermediate</option>
-                    <option value="advanced">Advanced</option>
+                    <option value="Semester-1">Semester 1</option>
+                    <option value="Semester-2">Semester 2</option>
+                    <option value="Semester-3">Semester 3</option>
+                    <option value="Semester-4">Semester 4</option>
+                    <option value="Semester-5">Semester 5</option>
+                    <option value="Semester-6">Semester 6</option>
+                    <option value="Semester-7">Semester 7</option>
+                    <option value="Semester-8">Semester 8</option>
                   </select>
                 </div>
               </div>
@@ -921,7 +926,13 @@ const CoursesList = () => {
                     🧭 {getSubjectLabel(routeSubjectFilter)}
                     <button
                       onClick={() =>
-                        navigate(buildCoursesPath(classLevelSlug, streamSlug, undefined))
+                        navigate(
+                          buildCoursesPath(
+                            classLevelSlug,
+                            streamSlug,
+                            undefined
+                          )
+                        )
                       }
                     >
                       ×
@@ -932,7 +943,11 @@ const CoursesList = () => {
                   <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm flex items-center gap-1 border border-blue-200">
                     🧭 {formatSlugLabel(streamSlug)}
                     <button
-                      onClick={() => navigate(buildCoursesPath(classLevelSlug, undefined, undefined))}
+                      onClick={() =>
+                        navigate(
+                          buildCoursesPath(classLevelSlug, undefined, undefined)
+                        )
+                      }
                     >
                       ×
                     </button>
