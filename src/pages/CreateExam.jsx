@@ -153,7 +153,7 @@ const CreateExam = () => {
               className="input-field px-2 py-1 outline w-full"
               type="text"
               name="category"
-              placeholder="Specify the category (e.g., Beginner, Intermediate)"
+              placeholder="Specify the category (e.g., Semester-1)"
               value={examData.category}
               onChange={handleChange}
               required

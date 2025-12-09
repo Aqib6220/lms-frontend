@@ -43,7 +43,7 @@ const LoadingScreen = () => {
           {/* Main Title */}
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2">
             <span className="block bg-gradient-to-r from-white via-yellow-200 to-white bg-clip-text text-transparent bg-size-200 animate-gradient">
-              Rehbar Online
+              scholarsity
             </span>
           </h1>
 

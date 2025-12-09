@@ -1,245 +1,3 @@
-// import React, { useState } from "react";
-// import { useDispatch, useSelector } from "react-redux";
-// import { createCourse } from "../redux/courseSlice";
-// import { useNavigate } from "react-router-dom";
-// import { toast } from "react-toastify"
-
-// const CourseForm = () => {
-//     const dispatch = useDispatch();
-//     const { loading } = useSelector((state) => state.courses);
-//     const navigate = useNavigate();
-
-//     const [formData, setFormData] = useState({
-//         title: "",
-//         description: "",
-//         category: "",
-//         price: "",
-//         duration: "",
-//         prerequisites: "",
-//         courseLevel: "",
-//         certificationAvailable: false,
-//         thumbnail: null,
-//     });
-
-//     const [lessons, setLessons] = useState([]); // Store lessons
-//     const [syllabus, setSyllabus] = useState([]); // Store syllabus items
-
-//     // ✅ Handle Text Inputs & Checkbox
-//     const handleChange = (e) => {
-//         const { name, value, type, checked } = e.target;
-//         setFormData({
-//             ...formData,
-//             [name]: type === "checkbox" ? checked : value,
-//         });
-//     };
-
-//     // ✅ Handle File Inputs (Thumbnail)
-//     const handleFileChange = (e) => {
-//         setFormData({ ...formData, [e.target.name]: e.target.files[0] });
-//     };
-
-//     // ✅ Handle Syllabus Input Change
-//     const handleSyllabusChange = (index, field, value) => {
-//         const updatedSyllabus = syllabus.map((item, i) =>
-//             i === index ? { ...item, [field]: value } : item
-//         );
-//         setSyllabus(updatedSyllabus);
-//     };
-
-//     // ✅ Add New Syllabus Item
-//     const addSyllabusItem = () => {
-//         setSyllabus([...syllabus, { title: "", description: "" }]);
-//     };
-
-//     // ✅ Handle Lesson Input Change
-//     const handleLessonChange = (index, field, value) => {
-//         const updatedLessons = lessons.map((lesson, i) =>
-//             i === index ? { ...lesson, [field]: value } : lesson
-//         );
-//         setLessons(updatedLessons);
-//     };
-
-//     // ✅ Handle Lesson Video Upload
-//     const handleLessonFileChange = (index, file) => {
-//         const updatedLessons = lessons.map((lesson, i) =>
-//             i === index ? { ...lesson, video: file } : lesson
-//         );
-//         setLessons(updatedLessons);
-//     };
-
-//     // ✅ Add New Lesson Dynamically
-//     const addLesson = () => {
-//         setLessons([
-//             ...lessons,
-//             {
-//                 title: "",
-//                 description: "",
-//                 video: null,
-//                 order: lessons.length + 1,
-//             },
-//         ]);
-//     };
-
-//     // ✅ Handle Form Submit
-//     const handleSubmit = (e) => {
-//         e.preventDefault();
-
-//         // ✅ Validate syllabus before submission
-//         if (syllabus.some(item => !item.title.trim() || !item.description.trim())) {
-//             toast.warning("Each syllabus item must have a title and description.");
-//             return;
-//         }
-
-//         const courseData = new FormData();
-
-//         // ✅ Append all form fields except lessons
-//         for (const key in formData) {
-//             if (formData[key]) {
-//                 if (key === "certificationAvailable") {
-//                     courseData.append(key, formData[key] ? "true" : "false");
-//                 } else {
-//                     courseData.append(key, formData[key]);
-//                 }
-//             }
-//         }
-
-//         // ✅ Append Lesson Details
-//         lessons.forEach((lesson, index) => {
-//             courseData.append(`lessons[${index}][title]`, lesson.title);
-//             courseData.append(`lessons[${index}][description]`, lesson.description);
-//             courseData.append(`lessons[${index}][order]`, lesson.order);
-//             if (lesson.video) {
-//                 courseData.append(`lessonVideos`, lesson.video); // ✅ Keep same key for all videos
-//             }
-//         });
-
-//         // ✅ Append Syllabus Details (with correct `description` key)
-//         syllabus.forEach((item, index) => {
-//             courseData.append(`syllabus[${index}][title]`, item.title);
-//             courseData.append(`syllabus[${index}][description]`, item.description);
-//         });
-
-//         // ✅ Dispatch Course Creation
-//         dispatch(createCourse(courseData))
-//             .then(() => {
-//                 toast.success("Course submitted successfully! 🚀\nYour course is now under review. Please wait for admin approval.");
-//                 navigate("/profile");
-//             })
-//             .catch((err) => {
-//                 toast.error(`❌ Error: ${err.message || "Failed to create course"}`);
-//             });
-//     };
-
-//     return (
-//         <div className="max-w-lg mx-auto p-6 my-5 bg-white shadow-lg rounded-lg">
-
-//             <h2 className="text-2xl font-bold mb-6 text-gray-800">Create a Course</h2>
-
-//             <form onSubmit={handleSubmit} className="space-y-4">
-//                 <input type="text" name="title" placeholder="Title" onChange={handleChange} className="w-full p-2 border rounded" required />
-//                 <textarea name="description" placeholder="Description" onChange={handleChange} className="w-full p-2 border rounded" required />
-//                 <input type="text" name="category" placeholder="Category" onChange={handleChange} className="w-full p-2 border rounded" required />
-//                 <input type="number" name="price" placeholder="Price" onChange={handleChange} className="w-full p-2 border rounded" required />
-//                 <input type="text" name="duration" placeholder="Duration" onChange={handleChange} className="w-full p-2 border rounded" required />
-//                 <input type="text" name="prerequisites" placeholder="Prerequisites" onChange={handleChange} className="w-full p-2 border rounded" />
-//                 <select
-//                     className="w-full p-2 border rounded"
-//                     name="courseLevel"
-//                     required
-//                     value={formData.courseLevel} // ✅ React-controlled state
-//                     onChange={handleChange}
-//                 >
-//                     <option value="" disabled hidden>Select Course Level</option>
-//                     <option value="Beginner">Beginner</option>
-//                     <option value="Intermediate">Intermediate</option>
-//                     <option value="Advance">Advance</option>
-//                 </select>
-
-//                 <label className="flex items-center space-x-2">
-//                     <input type="checkbox" name="certificationAvailable" onChange={handleChange} />
-//                     <span>Certification Available</span>
-//                 </label>
-
-//                 <label className="block">
-//                     Thumbnail:
-//                     <input type="file" name="thumbnail" accept="image/*" onChange={handleFileChange} required />
-//                 </label>
-
-//                 {/* ✅ Syllabus Section */}
-//                 <h3 className="text-lg font-semibold">Course Syllabus</h3>
-//                 {syllabus.map((item, index) => (
-//                     <div key={index} className="p-4 border rounded mt-2">
-//                         <input
-//                             type="text"
-//                             placeholder="Enter syllabus title (e.g., Introduction to JavaScript)"
-//                             value={item.title}
-//                             onChange={(e) => handleSyllabusChange(index, "title", e.target.value)}
-//                             required
-//                             className="w-full p-2 border rounded"
-//                         />
-//                         <textarea
-//                             placeholder="Provide a brief description of this syllabus"
-//                             value={item.description}
-//                             onChange={(e) => handleSyllabusChange(index, "description", e.target.value)}
-//                             required
-//                             className="w-full p-2 border rounded mt-2"
-//                         />
-//                     </div>
-//                 ))}
-//                 <button
-//                     type="button"
-//                     onClick={addSyllabusItem}
-//                     className="w-full p-2 bg-blue-500 text-white rounded mt-2"
-//                 >
-//                     + Add New Syllabus Section
-//                 </button>
-
-//                 {/* ✅ Lessons Section */}
-//                 <h3 className="text-lg font-semibold mt-6">Course Lessons</h3>
-//                 {lessons.map((lesson, index) => (
-//                     <div key={index} className="p-4 border rounded mt-2">
-//                         <input
-//                             type="text"
-//                             placeholder="Enter lesson title (e.g., Basics of HTML)"
-//                             value={lesson.title}
-//                             onChange={(e) => handleLessonChange(index, "title", e.target.value)}
-//                             required
-//                             className="w-full p-2 border rounded"
-//                         />
-//                         <textarea
-//                             placeholder="Provide a detailed description of this lesson"
-//                             value={lesson.description}
-//                             onChange={(e) => handleLessonChange(index, "description", e.target.value)}
-//                             className="w-full p-2 border rounded mt-2"
-//                         />
-//                         <input
-//                             type="file"
-//                             accept="video/*"
-//                             onChange={(e) => handleLessonFileChange(index, e.target.files[0])}
-//                             className="w-full p-2 mt-2"
-//                         />
-//                     </div>
-//                 ))}
-//                 <button
-//                     type="button"
-//                     onClick={addLesson}
-//                     className="w-full p-2 bg-green-500 text-white rounded mt-2"
-//                 >
-//                     + Add New Lesson
-//                 </button>
-
-//                 <button type="submit" disabled={loading} className="w-full p-2 bg-blue-500 text-white rounded">
-//                     {loading ? "Creating..." : "Create Course"}
-//                 </button>
-//             </form>
-//         </div>
-//     );
-// };
-
-// export default CourseForm;
-
-// ------------------------------------------------------------------
-
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createCourse } from "../redux/courseSlice";
@@ -324,7 +82,8 @@ const CourseForm = () => {
       { value: "physics", label: "Physics", icon: <FaCalculator /> },
       { value: "chemistry", label: "Chemistry", icon: <FaFlask /> },
       { value: "mathematics", label: "Mathematics", icon: <FaCalculator /> },
-      { value: "biology", label: "Biology", icon: <FaFlask /> },
+      { value: "Botany", label: "Botany", icon: <FaFlask /> },
+      { value: "Zoology", label: "Zoology", icon: <FaFlask /> },
       { value: "english", label: "English", icon: <FaLanguage /> },
       { value: "hindi", label: "Hindi", icon: <FaLanguage /> },
       { value: "urdu", label: "Urdu", icon: <FaLanguage /> },
@@ -342,7 +101,8 @@ const CourseForm = () => {
       { value: "physics", label: "Physics", icon: <FaCalculator /> },
       { value: "chemistry", label: "Chemistry", icon: <FaFlask /> },
       { value: "mathematics", label: "Mathematics", icon: <FaCalculator /> },
-      { value: "biology", label: "Biology", icon: <FaFlask /> },
+      { value: "Botany", label: "Botany", icon: <FaFlask /> },
+      { value: "Zoology", label: "Zoology", icon: <FaFlask /> },
       { value: "english", label: "English", icon: <FaLanguage /> },
       { value: "hindi", label: "Hindi", icon: <FaLanguage /> },
       { value: "urdu", label: "Urdu", icon: <FaLanguage /> },
@@ -362,16 +122,17 @@ const CourseForm = () => {
       },
     ],
     ug: [
-      { value: "bsc-physics", label: "B.Sc Physics", icon: <FaCalculator /> },
-      { value: "bsc-chemistry", label: "B.Sc Chemistry", icon: <FaFlask /> },
+      { value: "physics", label: "Physics", icon: <FaCalculator /> },
+      { value: "chemistry", label: "Chemistry", icon: <FaFlask /> },
       {
-        value: "bsc-mathematics",
-        label: "B.Sc Mathematics",
+        value: "mathematics",
+        label: "Mathematics",
         icon: <FaCalculator />,
       },
-      { value: "bsc-biology", label: "B.Sc Biology", icon: <FaFlask /> },
-      { value: "ba-english", label: "B.A English", icon: <FaLanguage /> },
-      { value: "ba-history", label: "B.A History", icon: <FaHistory /> },
+      { value: "Botany", label: "Botany", icon: <FaFlask /> },
+      { value: "Zoology", label: " Zoology", icon: <FaFlask /> },
+      { value: "english", label: " English", icon: <FaLanguage /> },
+      { value: "history", label: " History", icon: <FaHistory /> },
       { value: "bcom", label: "B.Com", icon: <FaCalculator /> },
       { value: "bca", label: "BCA", icon: <FaCalculator /> },
     ],
@@ -489,10 +250,14 @@ const CourseForm = () => {
     } else {
       syllabus.forEach((item, index) => {
         if (!item.title.trim()) {
-          newErrors[`syllabus_title_${index}`] = `Section ${index + 1} title is required`;
+          newErrors[`syllabus_title_${index}`] = `Section ${
+            index + 1
+          } title is required`;
         }
         if (!item.description.trim()) {
-          newErrors[`syllabus_description_${index}`] = `Section ${index + 1} description is required`;
+          newErrors[`syllabus_description_${index}`] = `Section ${
+            index + 1
+          } description is required`;
         }
       });
     }
@@ -502,20 +267,36 @@ const CourseForm = () => {
     } else {
       chapters.forEach((chapter, chapterIndex) => {
         if (!chapter.title.trim()) {
-          newErrors[`chapter_title_${chapterIndex}`] = `Chapter ${chapterIndex + 1} title is required`;
+          newErrors[`chapter_title_${chapterIndex}`] = `Chapter ${
+            chapterIndex + 1
+          } title is required`;
         }
         if (!chapter.lessons || chapter.lessons.length === 0) {
-          newErrors[`chapter_lessons_${chapterIndex}`] = `Chapter ${chapterIndex + 1} must have at least one lesson`;
+          newErrors[`chapter_lessons_${chapterIndex}`] = `Chapter ${
+            chapterIndex + 1
+          } must have at least one lesson`;
         } else {
           chapter.lessons.forEach((lesson, lessonIndex) => {
             if (!lesson.title.trim()) {
-              newErrors[`lesson_title_${chapterIndex}_${lessonIndex}`] = `Lesson ${lessonIndex + 1} in Chapter ${chapterIndex + 1} title is required`;
+              newErrors[
+                `lesson_title_${chapterIndex}_${lessonIndex}`
+              ] = `Lesson ${lessonIndex + 1} in Chapter ${
+                chapterIndex + 1
+              } title is required`;
             }
             if (lesson.videoType === "upload" && !lesson.video) {
-              newErrors[`lesson_video_${chapterIndex}_${lessonIndex}`] = `Lesson ${lessonIndex + 1} in Chapter ${chapterIndex + 1} video is required`;
+              newErrors[
+                `lesson_video_${chapterIndex}_${lessonIndex}`
+              ] = `Lesson ${lessonIndex + 1} in Chapter ${
+                chapterIndex + 1
+              } video is required`;
             }
             if (lesson.videoType === "youtube" && !lesson.videoUrl.trim()) {
-              newErrors[`lesson_video_${chapterIndex}_${lessonIndex}`] = `Lesson ${lessonIndex + 1} in Chapter ${chapterIndex + 1} YouTube URL is required`;
+              newErrors[
+                `lesson_video_${chapterIndex}_${lessonIndex}`
+              ] = `Lesson ${lessonIndex + 1} in Chapter ${
+                chapterIndex + 1
+              } YouTube URL is required`;
             }
           });
         }
@@ -610,7 +391,8 @@ const CourseForm = () => {
   };
 
   const removeChapter = (chapterIndex) => {
-    const chapterTitle = chapters[chapterIndex].title || `Chapter ${chapterIndex + 1}`;
+    const chapterTitle =
+      chapters[chapterIndex].title || `Chapter ${chapterIndex + 1}`;
     const updatedChapters = chapters.filter((_, i) => i !== chapterIndex);
     setChapters(updatedChapters);
     toast.warning(`Removed: ${chapterTitle}`);
@@ -622,7 +404,10 @@ const CourseForm = () => {
     );
     setChapters(updatedChapters);
     if (errors[`chapter_${field}_${chapterIndex}`]) {
-      setErrors((prev) => ({ ...prev, [`chapter_${field}_${chapterIndex}`]: "" }));
+      setErrors((prev) => ({
+        ...prev,
+        [`chapter_${field}_${chapterIndex}`]: "",
+      }));
     }
   };
 
@@ -655,10 +440,15 @@ const CourseForm = () => {
   };
 
   const removeLessonFromChapter = (chapterIndex, lessonIndex) => {
-    const lessonTitle = chapters[chapterIndex].lessons[lessonIndex].title || `Lesson ${lessonIndex + 1}`;
+    const lessonTitle =
+      chapters[chapterIndex].lessons[lessonIndex].title ||
+      `Lesson ${lessonIndex + 1}`;
     const updatedChapters = chapters.map((chapter, i) =>
       i === chapterIndex
-        ? { ...chapter, lessons: chapter.lessons.filter((_, j) => j !== lessonIndex) }
+        ? {
+            ...chapter,
+            lessons: chapter.lessons.filter((_, j) => j !== lessonIndex),
+          }
         : chapter
     );
     setChapters(updatedChapters);
@@ -678,7 +468,10 @@ const CourseForm = () => {
     );
     setChapters(updatedChapters);
     if (errors[`lesson_${field}_${chapterIndex}_${lessonIndex}`]) {
-      setErrors((prev) => ({ ...prev, [`lesson_${field}_${chapterIndex}_${lessonIndex}`]: "" }));
+      setErrors((prev) => ({
+        ...prev,
+        [`lesson_${field}_${chapterIndex}_${lessonIndex}`]: "",
+      }));
     }
   };
 
@@ -696,7 +489,11 @@ const CourseForm = () => {
         : chapter
     );
     setChapters(updatedChapters);
-    toast.info(`Video type changed to ${type === "upload" ? "file upload" : "YouTube link"}`);
+    toast.info(
+      `Video type changed to ${
+        type === "upload" ? "file upload" : "YouTube link"
+      }`
+    );
   };
 
   const handleLessonFileChange = (chapterIndex, lessonIndex, file) => {
@@ -714,7 +511,10 @@ const CourseForm = () => {
       setChapters(updatedChapters);
       toast.success(`Video "${file.name}" selected`);
       if (errors[`lesson_video_${chapterIndex}_${lessonIndex}`]) {
-        setErrors((prev) => ({ ...prev, [`lesson_video_${chapterIndex}_${lessonIndex}`]: "" }));
+        setErrors((prev) => ({
+          ...prev,
+          [`lesson_video_${chapterIndex}_${lessonIndex}`]: "",
+        }));
       }
     }
   };
@@ -764,7 +564,10 @@ const CourseForm = () => {
     );
     setChapters(updatedChapters);
     if (errors[`lesson_video_${chapterIndex}_${lessonIndex}`]) {
-      setErrors((prev) => ({ ...prev, [`lesson_video_${chapterIndex}_${lessonIndex}`]: "" }));
+      setErrors((prev) => ({
+        ...prev,
+        [`lesson_video_${chapterIndex}_${lessonIndex}`]: "",
+      }));
     }
   };
 
@@ -774,30 +577,42 @@ const CourseForm = () => {
         ? {
             ...chapter,
             lessons: chapter.lessons.map((lesson, j) =>
-              j === lessonIndex ? { ...lesson, isFreePreview: !lesson.isFreePreview } : lesson
+              j === lessonIndex
+                ? { ...lesson, isFreePreview: !lesson.isFreePreview }
+                : lesson
             ),
           }
         : chapter
     );
     setChapters(updatedChapters);
-    const status = updatedChapters[chapterIndex].lessons[lessonIndex].isFreePreview ? "enabled" : "disabled";
+    const status = updatedChapters[chapterIndex].lessons[lessonIndex]
+      .isFreePreview
+      ? "enabled"
+      : "disabled";
     toast.info(`Free preview ${status}`);
   };
 
   // Helper to get total lessons count
   const getTotalLessons = () => {
-    return chapters.reduce((total, chapter) => total + (chapter.lessons?.length || 0), 0);
+    return chapters.reduce(
+      (total, chapter) => total + (chapter.lessons?.length || 0),
+      0
+    );
   };
 
   const getTotalLessonsWithNotes = () => {
-    return chapters.reduce((total, chapter) => 
-      total + (chapter.lessons?.filter(l => l.notes)?.length || 0), 0
+    return chapters.reduce(
+      (total, chapter) =>
+        total + (chapter.lessons?.filter((l) => l.notes)?.length || 0),
+      0
     );
   };
 
   const getTotalFreePreviewLessons = () => {
-    return chapters.reduce((total, chapter) => 
-      total + (chapter.lessons?.filter(l => l.isFreePreview)?.length || 0), 0
+    return chapters.reduce(
+      (total, chapter) =>
+        total + (chapter.lessons?.filter((l) => l.isFreePreview)?.length || 0),
+      0
     );
   };
 
@@ -858,7 +673,10 @@ const CourseForm = () => {
       courseData.append("category", `${classLabel} - ${subjectLabel}`);
     } else {
       // Fallback category if class/subject not found
-      courseData.append("category", formData.subject || formData.classLevel || "General");
+      courseData.append(
+        "category",
+        formData.subject || formData.classLevel || "General"
+      );
     }
 
     // Append Chapters and Lessons (Udemy-like structure)
@@ -1291,9 +1109,14 @@ const CourseForm = () => {
               required
             >
               <option value="">Select Course Level</option>
-              <option value="Beginner">Beginner</option>
-              <option value="Intermediate">Intermediate</option>
-              <option value="Advanced">Advanced</option>
+              <option value="Semester-1">Semester-1</option>
+              <option value="Semester-2">Semester-2</option>
+              <option value="Semester-3">Semester-3</option>
+              <option value="Semester-4">Semester-4</option>
+              <option value="Semester-5">Semester-5</option>
+              <option value="Semester-6">Semester-6</option>
+              <option value="Semester-7">Semester-7</option>
+              <option value="Semester-8">Semester-8</option>
             </select>
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
               <svg
@@ -1613,11 +1436,17 @@ const CourseForm = () => {
                   <div className="flex-1">
                     <input
                       type="text"
-                      placeholder={`Chapter ${chapterIndex + 1} Title (e.g., Introduction)`}
+                      placeholder={`Chapter ${
+                        chapterIndex + 1
+                      } Title (e.g., Introduction)`}
                       value={chapter.title}
                       onChange={(e) => {
                         e.stopPropagation();
-                        handleChapterChange(chapterIndex, "title", e.target.value);
+                        handleChapterChange(
+                          chapterIndex,
+                          "title",
+                          e.target.value
+                        );
                       }}
                       onClick={(e) => e.stopPropagation()}
                       className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white ${
@@ -1664,7 +1493,11 @@ const CourseForm = () => {
                       placeholder="Chapter description (optional)..."
                       value={chapter.description}
                       onChange={(e) =>
-                        handleChapterChange(chapterIndex, "description", e.target.value)
+                        handleChapterChange(
+                          chapterIndex,
+                          "description",
+                          e.target.value
+                        )
                       }
                       rows="2"
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
@@ -1684,7 +1517,9 @@ const CourseForm = () => {
                   {chapter.lessons?.length === 0 ? (
                     <div className="text-center py-6 bg-white rounded-lg border-2 border-dashed border-gray-300 mb-4">
                       <FaVideo className="mx-auto text-3xl text-gray-400 mb-2" />
-                      <p className="text-gray-500 text-sm">No lessons in this chapter</p>
+                      <p className="text-gray-500 text-sm">
+                        No lessons in this chapter
+                      </p>
                     </div>
                   ) : (
                     chapter.lessons?.map((lesson, lessonIndex) => (
@@ -1701,7 +1536,9 @@ const CourseForm = () => {
                           </div>
                           <button
                             type="button"
-                            onClick={() => removeLessonFromChapter(chapterIndex, lessonIndex)}
+                            onClick={() =>
+                              removeLessonFromChapter(chapterIndex, lessonIndex)
+                            }
                             className="text-red-500 hover:text-red-700 p-1"
                           >
                             <FaTrash size={14} />
@@ -1714,17 +1551,30 @@ const CourseForm = () => {
                             placeholder="Lesson Title"
                             value={lesson.title}
                             onChange={(e) =>
-                              handleLessonChange(chapterIndex, lessonIndex, "title", e.target.value)
+                              handleLessonChange(
+                                chapterIndex,
+                                lessonIndex,
+                                "title",
+                                e.target.value
+                              )
                             }
                             className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${
-                              errors[`lesson_title_${chapterIndex}_${lessonIndex}`]
+                              errors[
+                                `lesson_title_${chapterIndex}_${lessonIndex}`
+                              ]
                                 ? "border-red-300 bg-red-50"
                                 : "border-gray-300"
                             }`}
                           />
-                          {errors[`lesson_title_${chapterIndex}_${lessonIndex}`] && (
+                          {errors[
+                            `lesson_title_${chapterIndex}_${lessonIndex}`
+                          ] && (
                             <p className="text-red-600 text-xs">
-                              {errors[`lesson_title_${chapterIndex}_${lessonIndex}`]}
+                              {
+                                errors[
+                                  `lesson_title_${chapterIndex}_${lessonIndex}`
+                                ]
+                              }
                             </p>
                           )}
 
@@ -1732,7 +1582,12 @@ const CourseForm = () => {
                             placeholder="Lesson description..."
                             value={lesson.description}
                             onChange={(e) =>
-                              handleLessonChange(chapterIndex, lessonIndex, "description", e.target.value)
+                              handleLessonChange(
+                                chapterIndex,
+                                lessonIndex,
+                                "description",
+                                e.target.value
+                              )
                             }
                             rows="2"
                             className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
@@ -1744,7 +1599,12 @@ const CourseForm = () => {
                               placeholder="Duration (e.g., 15 min)"
                               value={lesson.duration}
                               onChange={(e) =>
-                                handleLessonChange(chapterIndex, lessonIndex, "duration", e.target.value)
+                                handleLessonChange(
+                                  chapterIndex,
+                                  lessonIndex,
+                                  "duration",
+                                  e.target.value
+                                )
                               }
                               className="p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                             />
@@ -1754,7 +1614,13 @@ const CourseForm = () => {
                           <div className="flex gap-2">
                             <button
                               type="button"
-                              onClick={() => handleLessonTypeChange(chapterIndex, lessonIndex, "upload")}
+                              onClick={() =>
+                                handleLessonTypeChange(
+                                  chapterIndex,
+                                  lessonIndex,
+                                  "upload"
+                                )
+                              }
                               className={`flex-1 flex items-center justify-center px-3 py-2 rounded-lg border text-sm ${
                                 lesson.videoType === "upload"
                                   ? "bg-blue-500 text-white border-blue-500"
@@ -1766,7 +1632,13 @@ const CourseForm = () => {
                             </button>
                             <button
                               type="button"
-                              onClick={() => handleLessonTypeChange(chapterIndex, lessonIndex, "youtube")}
+                              onClick={() =>
+                                handleLessonTypeChange(
+                                  chapterIndex,
+                                  lessonIndex,
+                                  "youtube"
+                                )
+                              }
                               className={`flex-1 flex items-center justify-center px-3 py-2 rounded-lg border text-sm ${
                                 lesson.videoType === "youtube"
                                   ? "bg-red-500 text-white border-red-500"
@@ -1780,16 +1652,26 @@ const CourseForm = () => {
 
                           {/* Video Input */}
                           {lesson.videoType === "upload" ? (
-                            <div className={`border-2 border-dashed rounded-lg p-3 text-center ${
-                              errors[`lesson_video_${chapterIndex}_${lessonIndex}`]
-                                ? "border-red-300 bg-red-50"
-                                : lesson.video ? "border-green-300 bg-green-50" : "border-gray-300"
-                            }`}>
+                            <div
+                              className={`border-2 border-dashed rounded-lg p-3 text-center ${
+                                errors[
+                                  `lesson_video_${chapterIndex}_${lessonIndex}`
+                                ]
+                                  ? "border-red-300 bg-red-50"
+                                  : lesson.video
+                                  ? "border-green-300 bg-green-50"
+                                  : "border-gray-300"
+                              }`}
+                            >
                               <input
                                 type="file"
                                 accept="video/*"
                                 onChange={(e) =>
-                                  handleLessonFileChange(chapterIndex, lessonIndex, e.target.files[0])
+                                  handleLessonFileChange(
+                                    chapterIndex,
+                                    lessonIndex,
+                                    e.target.files[0]
+                                  )
                                 }
                                 className="hidden"
                                 id={`video-${chapterIndex}-${lessonIndex}`}
@@ -1799,11 +1681,15 @@ const CourseForm = () => {
                                 className="cursor-pointer"
                               >
                                 {lesson.video ? (
-                                  <p className="text-green-600 text-sm">✓ {lesson.video.name}</p>
+                                  <p className="text-green-600 text-sm">
+                                    ✓ {lesson.video.name}
+                                  </p>
                                 ) : (
                                   <>
                                     <FaVideo className="mx-auto text-gray-400 mb-1" />
-                                    <span className="text-blue-600 text-sm">Click to upload video</span>
+                                    <span className="text-blue-600 text-sm">
+                                      Click to upload video
+                                    </span>
                                   </>
                                 )}
                               </label>
@@ -1814,30 +1700,50 @@ const CourseForm = () => {
                               placeholder="YouTube URL"
                               value={lesson.videoUrl}
                               onChange={(e) =>
-                                handleYouTubeUrlChange(chapterIndex, lessonIndex, e.target.value)
+                                handleYouTubeUrlChange(
+                                  chapterIndex,
+                                  lessonIndex,
+                                  e.target.value
+                                )
                               }
                               className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${
-                                errors[`lesson_video_${chapterIndex}_${lessonIndex}`]
+                                errors[
+                                  `lesson_video_${chapterIndex}_${lessonIndex}`
+                                ]
                                   ? "border-red-300 bg-red-50"
                                   : "border-gray-300"
                               }`}
                             />
                           )}
-                          {errors[`lesson_video_${chapterIndex}_${lessonIndex}`] && (
+                          {errors[
+                            `lesson_video_${chapterIndex}_${lessonIndex}`
+                          ] && (
                             <p className="text-red-600 text-xs">
-                              {errors[`lesson_video_${chapterIndex}_${lessonIndex}`]}
+                              {
+                                errors[
+                                  `lesson_video_${chapterIndex}_${lessonIndex}`
+                                ]
+                              }
                             </p>
                           )}
 
                           {/* PDF Notes Upload */}
-                          <div className={`border-2 border-dashed rounded-lg p-3 ${
-                            lesson.notes ? "border-green-300 bg-green-50" : "border-gray-300"
-                          }`}>
+                          <div
+                            className={`border-2 border-dashed rounded-lg p-3 ${
+                              lesson.notes
+                                ? "border-green-300 bg-green-50"
+                                : "border-gray-300"
+                            }`}
+                          >
                             <input
                               type="file"
                               accept=".pdf"
                               onChange={(e) =>
-                                handleLessonNotesChange(chapterIndex, lessonIndex, e.target.files[0])
+                                handleLessonNotesChange(
+                                  chapterIndex,
+                                  lessonIndex,
+                                  e.target.files[0]
+                                )
                               }
                               className="hidden"
                               id={`notes-${chapterIndex}-${lessonIndex}`}
@@ -1846,11 +1752,15 @@ const CourseForm = () => {
                               <div className="flex items-center justify-between">
                                 <div className="flex items-center">
                                   <FaFilePdf className="text-red-500 mr-2" />
-                                  <span className="text-green-700 text-sm">{lesson.notes.name}</span>
+                                  <span className="text-green-700 text-sm">
+                                    {lesson.notes.name}
+                                  </span>
                                 </div>
                                 <button
                                   type="button"
-                                  onClick={() => removeLessonNotes(chapterIndex, lessonIndex)}
+                                  onClick={() =>
+                                    removeLessonNotes(chapterIndex, lessonIndex)
+                                  }
                                   className="text-red-500 hover:text-red-700"
                                 >
                                   <FaTrash size={12} />
@@ -1862,24 +1772,34 @@ const CourseForm = () => {
                                 className="cursor-pointer flex items-center justify-center"
                               >
                                 <FaFilePdf className="text-gray-400 mr-2" />
-                                <span className="text-red-600 text-sm">Upload PDF Notes</span>
+                                <span className="text-red-600 text-sm">
+                                  Upload PDF Notes
+                                </span>
                               </label>
                             )}
                           </div>
 
                           {/* Free Preview Toggle */}
                           <div className="flex items-center justify-between p-2 bg-blue-50 rounded-lg">
-                            <span className="text-sm text-gray-700">Free Preview</span>
+                            <span className="text-sm text-gray-700">
+                              Free Preview
+                            </span>
                             <button
                               type="button"
-                              onClick={() => toggleFreePreview(chapterIndex, lessonIndex)}
+                              onClick={() =>
+                                toggleFreePreview(chapterIndex, lessonIndex)
+                              }
                               className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-                                lesson.isFreePreview ? "bg-green-500" : "bg-gray-300"
+                                lesson.isFreePreview
+                                  ? "bg-green-500"
+                                  : "bg-gray-300"
                               }`}
                             >
                               <span
                                 className={`inline-block h-3 w-3 transform rounded-full bg-white transition ${
-                                  lesson.isFreePreview ? "translate-x-5" : "translate-x-1"
+                                  lesson.isFreePreview
+                                    ? "translate-x-5"
+                                    : "translate-x-1"
                                 }`}
                               />
                             </button>

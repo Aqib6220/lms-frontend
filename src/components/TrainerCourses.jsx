@@ -6,7 +6,9 @@ import { useNavigate } from "react-router-dom";
 
 const TrainerCourses = () => {
   const dispatch = useDispatch();
-  const { trainerCourses, loading, error } = useSelector((state) => state.courses);
+  const { trainerCourses, loading, error } = useSelector(
+    (state) => state.courses
+  );
   const { currentUser } = useSelector((state) => state.users);
   const navigate = useNavigate();
 
@@ -18,15 +20,22 @@ const TrainerCourses = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 py-8 px-4 md:px-10">
-      <button onClick={() => navigate(-1)} className="mb-2 mx-6 px-4 py-1 bg-black text-white hover:bg-gray-900">
+      <button
+        onClick={() => navigate(-1)}
+        className="mb-2 mx-6 px-4 py-1 bg-black text-white hover:bg-gray-900"
+      >
         ← Back
       </button>
       <div className="max-w-6xl mx-auto">
         {/* Page Title */}
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">Your Created Courses</h2>
+        <h2 className="text-2xl font-bold text-gray-800 mb-6">
+          Your Created Courses
+        </h2>
 
         {/* Loading & Error Handling */}
-        {loading && <p className="text-center text-gray-600">Loading your courses...</p>}
+        {loading && (
+          <p className="text-center text-gray-600">Loading your courses...</p>
+        )}
         {error && <p className="text-center text-red-500">{error}</p>}
         {trainerCourses.length === 0 && !loading && !error && (
           <p className="text-center text-gray-600">No courses found.</p>
@@ -41,7 +50,7 @@ const TrainerCourses = () => {
                 image={course.thumbnail}
                 category={course.category}
                 heading={course.title}
-                level={course.level || "Beginner"}
+                level={course.level || ""}
                 duration={course.duration || "N/A"}
                 link={`/TrainerCourseDetails/${course._id}`}
               />
