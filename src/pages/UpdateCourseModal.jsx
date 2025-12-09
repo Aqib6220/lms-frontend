@@ -631,13 +631,14 @@ const UpdateCourseModal = ({ course, isOpen, onClose }) => {
     duration: "",
     prerequisites: "",
     courseLevel: "",
+    
     certificationAvailable: false,
     thumbnail: null,
     thumbnailPreview: "",
     language: "English",
     targetAudience: "",
   });
-
+  console.log(formData);
   const [chapters, setChapters] = useState([]);
   const [expandedChapters, setExpandedChapters] = useState({});
   const [syllabus, setSyllabus] = useState([]);
@@ -645,7 +646,7 @@ const UpdateCourseModal = ({ course, isOpen, onClose }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
-
+// console.log(formData)
   // Educational structure
   const classLevels = [
     { value: "class-11", label: "Class 11th", icon: <FaGraduationCap /> },
@@ -805,7 +806,7 @@ const UpdateCourseModal = ({ course, isOpen, onClose }) => {
         price: course.price || "",
         duration: course.duration || "",
         prerequisites: course.prerequisites || "",
-        courseLevel: course.level || "",
+        courseLevel: course.courseLevel || "",
         certificationAvailable: course.certificationAvailable || false,
         thumbnail: null,
         thumbnailPreview: course.thumbnail || "",
@@ -826,9 +827,13 @@ const UpdateCourseModal = ({ course, isOpen, onClose }) => {
       newErrors.classLevel = "Class level is required";
     if (!formData.subject.trim()) newErrors.subject = "Subject is required";
     if (!formData.title.trim()) newErrors.title = "Course title is required";
-    if (!formData.price.trim()) newErrors.price = "Price is required";
-    else if (parseFloat(formData.price) < 0)
-      newErrors.price = "Price cannot be negative";
+    if (
+      formData.price === null ||
+      formData.price === undefined ||
+      formData.price <= 0
+    ) {
+      newErrors.price = "Price must be greater than 0";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
