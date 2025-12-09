@@ -48,9 +48,7 @@ function Register({ isOpen, onClose, onLoginClick }) {
 
   useEffect(() => {
     if (success) {
-      toast.success(
-        "🎉 Account created successfully! Welcome to Rehbar Online!"
-      );
+      toast.success("🎉 Account created successfully! Welcome to scholarsity!");
       dispatch(
         loginUser({ email: formData.email, password: formData.password })
       );

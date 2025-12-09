@@ -317,7 +317,6 @@ const Home = () => {
     { number: "95%", label: "Success Rate", icon: <FaGraduationCap /> },
   ];
 
-  // Academic Subjects for different levels
   const academicSubjects = [
     {
       level: "11th & 12th Science",
@@ -325,7 +324,8 @@ const Home = () => {
         "Physics",
         "Chemistry",
         "Mathematics",
-        "Biology",
+        "Botany",
+        "Zoology",
         "Computer Science",
       ],
       color: "from-blue-500 to-cyan-500",

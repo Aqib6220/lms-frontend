@@ -7,7 +7,7 @@ import {
   addQuestions,
 } from "../redux/examSlice"; // Update paths if necessary
 import { useParams, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify"
+import { toast } from "react-toastify";
 
 const EditExamPage = () => {
   const { examId } = useParams(); // Get exam ID from URL
@@ -42,19 +42,18 @@ const EditExamPage = () => {
           title: selectedExam.title || "",
           duration: selectedExam.duration || 0,
           description: selectedExam.description || "",
-          code: selectedExam.code|| "",
+          code: selectedExam.code || "",
           subject: selectedExam.subject || "",
           category: selectedExam.category || "",
           timeLimit: selectedExam.timeLimit || "",
           numQuestions: selectedExam.numQuestions || "",
           totalMarks: selectedExam.totalMarks || "",
-          type:selectedExam.type || "Practice Test",
+          type: selectedExam.type || "Practice Test",
         });
         setQuestions(selectedExam.questions || []);
       }
     }
   }, [dispatch, exams, examId]);
-  
 
   // ✅ Handle input changes for exam
   const handleExamChange = (e) => {
@@ -70,8 +69,6 @@ const EditExamPage = () => {
     };
     setQuestions(updatedQuestions);
   };
-  
-  
 
   // ✅ Add new question
   const addNewQuestion = () => {
@@ -85,7 +82,6 @@ const EditExamPage = () => {
       },
     ]);
   };
-  
 
   // ✅ Remove question
   const removeQuestion = (index) => {
@@ -138,7 +134,6 @@ const EditExamPage = () => {
       typeof error === "string" ? error : JSON.stringify(error);
     return <p>Error: {errorMessage}</p>;
   }
-  
 
   return (
     <div className="container mx-auto p-6">
@@ -158,20 +153,20 @@ const EditExamPage = () => {
         </div>
 
         <div>
-            <label className="block text-lg font-medium text-gray-700">
-              Exam Code
-            </label>
-            <input
-              className="input-field px-2 py-1 outline w-full"
-              type="text"
-              name="code"
-              placeholder="Enter a unique exam code (e.g., JBT101)"
-              value={examData.code}
-              onChange={handleExamChange}
-              required
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-6">
+          <label className="block text-lg font-medium text-gray-700">
+            Exam Code
+          </label>
+          <input
+            className="input-field px-2 py-1 outline w-full"
+            type="text"
+            name="code"
+            placeholder="Enter a unique exam code (e.g., JBT101)"
+            value={examData.code}
+            onChange={handleExamChange}
+            required
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-6">
           <div>
             <label className="block text-lg font-medium text-gray-700">
               Subject
@@ -194,7 +189,7 @@ const EditExamPage = () => {
               className="input-field px-2 py-1 outline w-full"
               type="text"
               name="category"
-              placeholder="Specify the category (e.g., Beginner, Intermediate)"
+              placeholder="Specify the category (Semester-1)"
               value={examData.category}
               onChange={handleExamChange}
               required
@@ -292,19 +287,22 @@ const EditExamPage = () => {
               />
             ))}
             <select
-            value={question.correctOption ?? 0}
-            onChange={(e) =>
-              handleQuestionChange(index, "correctOption", parseInt(e.target.value, 10))
-            }
-            className="w-full p-2 border rounded mb-2"
-          >
-            {question.options?.map((option, optIndex) => (
-              <option key={optIndex} value={optIndex}>
-                {option || `Option ${optIndex + 1}`}
-              </option>
-            ))}
-          </select>
-
+              value={question.correctOption ?? 0}
+              onChange={(e) =>
+                handleQuestionChange(
+                  index,
+                  "correctOption",
+                  parseInt(e.target.value, 10)
+                )
+              }
+              className="w-full p-2 border rounded mb-2"
+            >
+              {question.options?.map((option, optIndex) => (
+                <option key={optIndex} value={optIndex}>
+                  {option || `Option ${optIndex + 1}`}
+                </option>
+              ))}
+            </select>
 
             <button
               type="button"
@@ -325,10 +323,7 @@ const EditExamPage = () => {
         </button>
 
         {/* ✅ Submit Button */}
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-6 py-2 mt-4"
-        >
+        <button type="submit" className="bg-blue-600 text-white px-6 py-2 mt-4">
           Save Changes
         </button>
       </form>

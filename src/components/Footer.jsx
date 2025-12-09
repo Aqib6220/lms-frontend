@@ -120,7 +120,7 @@ function Footer() {
               </div>
               <div>
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                  Rehbar Online
+                  scholarsity
                 </h2>
                 <p className="text-sm text-gray-300">Jammu & Kashmir</p>
               </div>
@@ -287,7 +287,7 @@ function Footer() {
               <p className="text-gray-400 text-sm">
                 &copy; {new Date().getFullYear()}{" "}
                 <span className="font-semibold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                  Rehbar Online
+                  scholarsity
                 </span>
                 . All rights reserved.
               </p>
