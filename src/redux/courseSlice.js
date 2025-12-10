@@ -202,7 +202,7 @@ export const updateCourse = createAsyncThunk(
         },
       };
 
-      const response = await axios.patch(
+      const response = await axios.put(
         `${API_URL}/${courseId}`,
         isFormDataUsed ? formData : updatedData, // Send JSON if no files
         config
