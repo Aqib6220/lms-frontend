@@ -15,6 +15,7 @@ import {
   FaSortAmountDown,
 } from "react-icons/fa";
 import { FiBook, FiAward } from "react-icons/fi";
+import Loader from "../common/Loader";
 
 const slugify = (value = "") =>
   value
@@ -333,54 +334,11 @@ const CoursesList = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="animate-pulse">
-            <div className="h-8 bg-gray-300 rounded w-1/3 mb-8"></div>
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-              <div className="lg:col-span-1">
-                <div className="bg-white rounded-xl shadow-lg p-6 h-96"></div>
-              </div>
-              <div className="lg:col-span-3">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {[...Array(6)].map((_, idx) => (
-                    <div
-                      key={idx}
-                      className="bg-white rounded-xl shadow-lg p-4 h-80"
-                    >
-                      <div className="h-40 bg-gray-300 rounded-lg mb-4"></div>
-                      <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
-                      <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
-                      <div className="h-3 bg-gray-200 rounded w-1/3"></div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div className="min-h-screen pt-20">
+        <Loader />
       </div>
     );
   }
-
-  if (error)
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pt-20 flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-red-500 text-6xl mb-4">⚠️</div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">
-            Error Loading Courses
-          </h2>
-          <p className="text-gray-600">{error}</p>
-          <button
-            onClick={() => dispatch(fetchAllCourses())}
-            className="mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            Try Again
-          </button>
-        </div>
-      </div>
-    );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pt-20">
@@ -476,14 +434,13 @@ const CoursesList = () => {
               <div className="space-y-6">
                 {/* Class Filter */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                    <FiBook className="text-blue-500" />
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Class Level
                   </label>
                   <select
                     value={classFilter}
                     onChange={(e) => setClassFilter(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg"
                   >
                     <option value="">All Classes</option>
                     {academicClasses.map((cls) => (
@@ -496,14 +453,13 @@ const CoursesList = () => {
 
                 {/* Subject Filter */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                    <FiAward className="text-green-500" />
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Subject
                   </label>
                   <select
                     value={subjectFilter}
                     onChange={(e) => setSubjectFilter(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg"
                   >
                     <option value="">All Subjects</option>
                     {subjects.map((subject) => (
@@ -516,29 +472,27 @@ const CoursesList = () => {
 
                 {/* Teacher Filter */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                    <FaChalkboardTeacher className="text-purple-500" />
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Teacher
                   </label>
                   <input
                     type="text"
-                    placeholder="Search teacher..."
                     value={teacherFilter}
                     onChange={(e) => setTeacherFilter(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Teacher name..."
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg"
                   />
                 </div>
 
-                {/* Price Filter */}
+                {/* Price */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                    <FaRupeeSign className="text-yellow-500" />
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Price
                   </label>
                   <select
                     value={priceFilter}
                     onChange={(e) => setPriceFilter(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg"
                   >
                     <option value="">All Prices</option>
                     <option value="free">Free</option>
@@ -549,34 +503,32 @@ const CoursesList = () => {
                   </select>
                 </div>
 
-                {/* Duration Filter */}
+                {/* Duration */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                    <FaClock className="text-red-500" />
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Duration
                   </label>
                   <select
                     value={durationFilter}
                     onChange={(e) => setDurationFilter(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg"
                   >
                     <option value="">Any Duration</option>
-                    <option value="short">Short (0-10 hrs)</option>
-                    <option value="medium">Medium (10-30 hrs)</option>
+                    <option value="short">Short (0–10 hrs)</option>
+                    <option value="medium">Medium (10–30 hrs)</option>
                     <option value="long">Long (30+ hrs)</option>
                   </select>
                 </div>
 
-                {/* Level Filter */}
+                {/* Level (Semester) */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                    <FaLayerGroup className="text-indigo-500" />
-                    Level
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Semester / Level
                   </label>
                   <select
                     value={levelFilter}
                     onChange={(e) => setLevelFilter(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg"
                   >
                     <option value="">All Levels</option>
                     <option value="Semester-1">Semester 1</option>
@@ -589,6 +541,14 @@ const CoursesList = () => {
                     <option value="Semester-8">Semester 8</option>
                   </select>
                 </div>
+
+                {/* Apply Button */}
+                <button
+                  onClick={() => setMobileFiltersOpen(false)}
+                  className="w-full bg-blue-600 text-white py-3 rounded-lg"
+                >
+                  Apply Filters
+                </button>
               </div>
 
               {/* Results Count */}
@@ -849,8 +809,8 @@ const CoursesList = () => {
                 </div>
 
                 {/* Mobile Filter Content - Same as desktop but stacked */}
-                <div className="space-y-6">
-                  {/* Add the same filter components as desktop sidebar here */}
+                <div className="space-y-6 max-h-[75vh] overflow-y-auto pr-2">
+                  {/* Class Filter */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
                       Class Level
@@ -869,12 +829,13 @@ const CoursesList = () => {
                     </select>
                   </div>
 
-                  {/* Add other filters similarly */}
+                  {/* Subject Filter (SCROLLABLE FIX) */}
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label className="block text-sm font-semibold text-gray-700 mb-2 ">
                       Subject
                     </label>
                     <select
+                      size={6}
                       value={subjectFilter}
                       onChange={(e) => setSubjectFilter(e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg"
@@ -888,6 +849,21 @@ const CoursesList = () => {
                     </select>
                   </div>
 
+                  {/* Teacher */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Teacher
+                    </label>
+                    <input
+                      type="text"
+                      value={teacherFilter}
+                      onChange={(e) => setTeacherFilter(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                      placeholder="Search teacher..."
+                    />
+                  </div>
+
+                  {/* Price */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
                       Price
@@ -906,9 +882,46 @@ const CoursesList = () => {
                     </select>
                   </div>
 
+                  {/* Duration */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Duration
+                    </label>
+                    <select
+                      value={durationFilter}
+                      onChange={(e) => setDurationFilter(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                    >
+                      <option value="">Any Duration</option>
+                      <option value="short">Short (0–10 hrs)</option>
+                      <option value="medium">Medium (10–30 hrs)</option>
+                      <option value="long">Long (30+ hrs)</option>
+                    </select>
+                  </div>
+
+                  {/* Level (Semester) */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Semester / Level
+                    </label>
+                    <select
+                      value={levelFilter}
+                      onChange={(e) => setLevelFilter(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                    >
+                      <option value="">All Levels</option>
+                      {Array.from({ length: 8 }).map((_, i) => (
+                        <option key={i} value={`Semester-${i + 1}`}>
+                          Semester {i + 1}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Apply Button */}
                   <button
                     onClick={() => setMobileFiltersOpen(false)}
-                    className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                    className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
                   >
                     Apply Filters
                   </button>

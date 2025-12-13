@@ -14,11 +14,13 @@ import {
   FaGithub,
 } from "react-icons/fa";
 import { FiLogIn } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
 function Login({ isOpen, onClose, onRegisterClick }) {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const dispatch = useDispatch();
   const { error, success } = useSelector((state) => state.auth);
@@ -26,10 +28,15 @@ function Login({ isOpen, onClose, onRegisterClick }) {
   useEffect(() => {
     if (success) {
       toast.success("Welcome back! Login successful.");
+
       onClose();
-      dispatch(resetAuthState());
+
+      setTimeout(() => {
+        navigate("/"); // or "/profile" / "/dashboard"
+        dispatch(resetAuthState());
+      }, 100);
     }
-  }, [success, dispatch, onClose]);
+  }, [success]);
 
   useEffect(() => {
     if (error) {

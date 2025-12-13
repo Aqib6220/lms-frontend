@@ -477,8 +477,7 @@ function Navbar() {
                   <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-3 lg:p-4 text-center border-t border-blue-500">
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
                       <p className="text-white text-xs lg:text-sm">
-                        🎯 <strong>25,000+</strong> J&K Students Already
-                        Learning
+                        🎯 <strong>1679+</strong> J&K Students Already Learning
                       </p>
                       <Link
                         to="/courses"
@@ -496,14 +495,14 @@ function Navbar() {
               )}
             </div>
 
-            {user && (
+            {/* {user && (
               <Link
                 to="/exams"
                 className="hover:text-blue-600 transition-all font-medium text-gray-700 hover:font-semibold px-3 lg:px-4 py-2 rounded-lg hover:bg-blue-50 border border-transparent hover:border-blue-200"
               >
                 Practice Tests
               </Link>
-            )}
+            )} */}
 
             {/* Search Bar */}
             <div className="relative">

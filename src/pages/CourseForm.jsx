@@ -62,7 +62,17 @@ const CourseForm = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
-
+  // --------------------
+  const [coursePdfs, setCoursePdfs] = useState({
+    syllabusPdf: null,
+    notesPdf: null,
+    previousPapersPdf: null,
+  });
+  const handleCoursePdfChange = (type, file) => {
+    if (!file) return;
+    setCoursePdfs((prev) => ({ ...prev, [type]: file }));
+    toast.success(`${type} uploaded`);
+  };
   // Enhanced educational structure
   const classLevels = [
     { value: "class-11", label: "Class 11th", icon: <FaGraduationCap /> },
@@ -149,7 +159,8 @@ const CourseForm = () => {
       { value: "mcom", label: "M.Com", icon: <FaCalculator /> },
     ],
     competitive: [
-      { value: "jkbose", label: "JKBOSE Exams", icon: <FaBook /> },
+      { value: "", label: "JKBOSE Exams", icon: <FaBook /> },
+      { value: "", label: "JKBOSE Exams", icon: <FaBook /> },
       { value: "jkssb", label: "JKSSB Exams", icon: <FaBook /> },
       { value: "jkpsc", label: "JKPSC Exams", icon: <FaBook /> },
       { value: "neet", label: "NEET", icon: <FaFlask /> },
@@ -179,6 +190,7 @@ const CourseForm = () => {
 
   const boards = [
     { value: "JKBOSE", label: "JKBOSE" },
+    { value: "KU", label: "KU" },
     { value: "CBSE", label: "CBSE" },
     { value: "ICSE", label: "ICSE" },
     { value: "State Board", label: "State Board" },
@@ -709,7 +721,17 @@ const CourseForm = () => {
 
     // Append Syllabus Details as JSON
     courseData.append("syllabus", JSON.stringify(syllabus));
+    if (coursePdfs.syllabusPdf)
+      courseData.append("courseSyllabusPdf", coursePdfs.syllabusPdf);
 
+    if (coursePdfs.notesPdf)
+      courseData.append("courseNotesPdf", coursePdfs.notesPdf);
+
+    if (coursePdfs.previousPapersPdf)
+      courseData.append(
+        "coursePreviousPapersPdf",
+        coursePdfs.previousPapersPdf
+      );
     try {
       await dispatch(createCourse(courseData)).unwrap();
       toast.success(
@@ -1276,6 +1298,45 @@ const CourseForm = () => {
         <p className="text-purple-700 text-sm">
           Add syllabus sections and lessons to structure your course content
         </p>
+      </div>
+      {/* Course Level PDFs */}
+      <div className="mb-8">
+        <h4 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
+          <FaFilePdf className="mr-2 text-red-500" />
+          Course Documents (PDF)
+        </h4>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {[
+            { key: "syllabusPdf", label: "Syllabus PDF" },
+            { key: "notesPdf", label: "Notes PDF" },
+            { key: "previousPapersPdf", label: "Previous Year Papers" },
+          ].map((item) => (
+            <div
+              key={item.key}
+              className="border-2 border-dashed rounded-lg p-4 text-center"
+            >
+              <input
+                type="file"
+                accept=".pdf"
+                id={item.key}
+                className="hidden"
+                onChange={(e) =>
+                  handleCoursePdfChange(item.key, e.target.files[0])
+                }
+              />
+              <label htmlFor={item.key} className="cursor-pointer">
+                <FaFilePdf className="mx-auto text-2xl text-gray-400 mb-2" />
+                <p className="text-sm font-medium">{item.label}</p>
+                {coursePdfs[item.key] && (
+                  <p className="text-green-600 text-xs mt-2">
+                    ✓ {coursePdfs[item.key].name}
+                  </p>
+                )}
+              </label>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Syllabus Section */}
