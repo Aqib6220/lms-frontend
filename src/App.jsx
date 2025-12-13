@@ -5,12 +5,12 @@ import Footer from "./components/Footer.jsx";
 import "./App.css";
 import EditExam from "./pages/EditExam.jsx";
 import AdminExamList from "./pages/AdminExamList.jsx";
-import NotFound from "./pages/NotFound.jsx";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // Import the new LoadingScreen component
 import LoadingScreen from "./components/LoadingScreen";
+import NotFound from "./common/NotFound.jsx";
 
 // Lazy Loading Pages
 const Home = lazy(() => import("./pages/Home.jsx"));

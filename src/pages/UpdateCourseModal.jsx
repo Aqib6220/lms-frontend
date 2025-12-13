@@ -631,7 +631,7 @@ const UpdateCourseModal = ({ course, isOpen, onClose }) => {
     duration: "",
     prerequisites: "",
     courseLevel: "",
-    
+
     certificationAvailable: false,
     thumbnail: null,
     thumbnailPreview: "",
@@ -646,7 +646,7 @@ const UpdateCourseModal = ({ course, isOpen, onClose }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
-// console.log(formData)
+  // console.log(formData)
   // Educational structure
   const classLevels = [
     { value: "class-11", label: "Class 11th", icon: <FaGraduationCap /> },
@@ -758,6 +758,7 @@ const UpdateCourseModal = ({ course, isOpen, onClose }) => {
   };
 
   const boards = [
+    { value: "KUKU", label: "KU" },
     { value: "JKBOSE", label: "JKBOSE" },
     { value: "CBSE", label: "CBSE" },
     { value: "ICSE", label: "ICSE" },
@@ -1612,6 +1613,58 @@ const UpdateCourseModal = ({ course, isOpen, onClose }) => {
               key={index}
               className="mb-4 p-4 border border-gray-200 rounded-lg"
             >
+              {/* PDF Upload for syllabus */}
+              <div
+                className={`border-2 border-dashed rounded-lg p-3 mt-3 ${
+                  item.pdf ? "border-green-300 bg-green-50" : "border-gray-300"
+                }`}
+              >
+                <input
+                  type="file"
+                  accept=".pdf"
+                  className="hidden"
+                  id={`syllabus-pdf-${index}`}
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                      const updated = [...syllabus];
+                      updated[index].pdf = file;
+                      setSyllabus(updated);
+                      toast.success(`PDF added: ${file.name}`);
+                    }
+                  }}
+                />
+
+                {item.pdf ? (
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <FaFilePdf className="text-red-500 mr-2" />
+                      <span className="text-green-700 text-sm">
+                        {item.pdf.name}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      className="text-red-500"
+                      onClick={() => {
+                        const updated = [...syllabus];
+                        updated[index].pdf = null;
+                        setSyllabus(updated);
+                      }}
+                    >
+                      <FaTrash />
+                    </button>
+                  </div>
+                ) : (
+                  <label
+                    htmlFor={`syllabus-pdf-${index}`}
+                    className="cursor-pointer flex justify-center text-red-600 text-sm"
+                  >
+                    <FaFilePdf className="mr-2" /> Upload Syllabus PDF
+                  </label>
+                )}
+              </div>
+
               <div className="flex justify-between items-center mb-3">
                 <h5 className="font-medium">Section {index + 1}</h5>
                 <button
