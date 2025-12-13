@@ -123,18 +123,17 @@ function Navbar() {
   }, [menuOpen]);
 
   const openLogin = () => {
-    navigate("/login");
+    setModalType("login");
     setMenuOpen(false);
   };
 
   const openRegister = () => {
-    navigate("/register");
+    setModalType("register");
     setMenuOpen(false);
   };
 
   const closeModal = () => {
     setModalType(null);
-    navigate("/");
   };
 
   const handleLogout = () => {
@@ -434,8 +433,8 @@ function Navbar() {
                                       <Link
                                         key={subject}
                                         to={`/courses/${activeClass
-                                          .toLowerCase()
-                                          .replace(/\s/g, "-")}/${stream
+                                          // .toLowerCase()
+                                          // .replace(/\s/g, "-")}/${stream
                                           .toLowerCase()
                                           .replace(/\s/g, "-")}/${subject
                                           .toLowerCase()

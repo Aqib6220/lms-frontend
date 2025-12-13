@@ -638,7 +638,7 @@ const UpdateCourseModal = ({ course, isOpen, onClose }) => {
     language: "English",
     targetAudience: "",
   });
-  console.log(formData);
+  // console.log(formData);
   const [chapters, setChapters] = useState([]);
   const [expandedChapters, setExpandedChapters] = useState({});
   const [syllabus, setSyllabus] = useState([]);
@@ -1229,18 +1229,28 @@ const UpdateCourseModal = ({ course, isOpen, onClose }) => {
       updatedData.append("chapters", JSON.stringify(chaptersForBackend));
 
       // Append video files
-      chapters.forEach((chapter) => {
-        chapter.lessons.forEach((lesson) => {
+      const lessonVideoMappings = [];
+      chapters.forEach((chapter, chIdx) => {
+        chapter.lessons.forEach((lesson, lessonIdx) => {
           if (lesson.videoType === "upload" && lesson.video instanceof File) {
             updatedData.append("lessonVideos", lesson.video);
+            lessonVideoMappings.push({ chapterIndex: chIdx, lessonIndex: lessonIdx });
           }
         });
       });
+      if (lessonVideoMappings.length > 0) {
+        updatedData.append("lessonVideoMappings", JSON.stringify(lessonVideoMappings));
+      }
 
       // Append syllabus
       updatedData.append("syllabus", JSON.stringify(syllabus));
 
       // Dispatch update action
+      // Debug: print form data entries to ensure files are present before sending
+      for (let pair of updatedData.entries()) {
+        console.debug("FormData entry:", pair[0], pair[1]);
+      }
+
       await dispatch(
         updateCourse({
           courseId: course._id,
