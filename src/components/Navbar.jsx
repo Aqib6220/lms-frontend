@@ -45,6 +45,18 @@ function Navbar() {
   const location = useLocation();
 
   useEffect(() => {
+    const openLoginFromAnywhere = () => {
+      setModalType("login");
+    };
+
+    window.addEventListener("open-login-modal", openLoginFromAnywhere);
+
+    return () => {
+      window.removeEventListener("open-login-modal", openLoginFromAnywhere);
+    };
+  }, []);
+
+  useEffect(() => {
     if (location.pathname === "/login") {
       setModalType("login");
     } else if (location.pathname === "/register") {

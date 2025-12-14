@@ -55,11 +55,12 @@ function App() {
   return (
     <Router>
       <Navbar />
-      <ToastContainer position="top-right" autoClose={3000} />
+      <ToastContainer position="bottom-right" autoClose={3000} />
       <div className="">
         <Suspense fallback={<LoadingScreen />}>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Home />} />
             <Route path="/CourseDetails/:id" element={<CourseDetails />} />
             <Route
               path="/TrainerCourseDetails/:id"
