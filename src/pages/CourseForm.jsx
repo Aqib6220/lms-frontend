@@ -68,6 +68,18 @@ const CourseForm = () => {
     notesPdf: null,
     previousPapersPdf: null,
   });
+
+  // Multiple course-level notes entries (title + file)
+  const [courseNotesList, setCourseNotesList] = useState([]);
+  const addCourseNote = () => setCourseNotesList((prev) => [...prev, { title: "", file: null }]);
+  const removeCourseNote = (idx) => setCourseNotesList((prev) => prev.filter((_, i) => i !== idx));
+  const handleCourseNoteTitleChange = (idx, val) =>
+    setCourseNotesList((prev) => prev.map((n, i) => (i === idx ? { ...n, title: val } : n)));
+  const handleCourseNoteFileChange = (idx, file) => {
+    if (!file) return;
+    setCourseNotesList((prev) => prev.map((n, i) => (i === idx ? { ...n, file } : n)));
+    toast.success(`Course note "${file.name}" selected`);
+  };
   const handleCoursePdfChange = (type, file) => {
     if (!file) return;
     setCoursePdfs((prev) => ({ ...prev, [type]: file }));
@@ -314,6 +326,13 @@ const CourseForm = () => {
         }
       });
     }
+
+    // Validate course-level notes list
+    courseNotesList.forEach((note, idx) => {
+      if (note.file && !note.title.trim()) {
+        newErrors[`course_note_title_${idx}`] = "Title is required when uploading a note";
+      }
+    });
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -732,6 +751,15 @@ const CourseForm = () => {
         "coursePreviousPapersPdf",
         coursePdfs.previousPapersPdf
       );
+
+    // Append additional course-level notes (multiple)
+    if (courseNotesList.length > 0) {
+      const meta = courseNotesList.map((n) => ({ title: n.title || "" }));
+      courseNotesList.forEach((n) => {
+        if (n.file) courseData.append("courseNotes", n.file);
+      });
+      courseData.append("courseNotesMeta", JSON.stringify(meta));
+    }
     try {
       await dispatch(createCourse(courseData)).unwrap();
       toast.success(
@@ -1336,6 +1364,58 @@ const CourseForm = () => {
               </label>
             </div>
           ))}
+        </div>
+
+        {/* Multiple course-level notes UI */}
+        <div className="mt-6 mb-6">
+          <div className="flex items-center justify-between mb-3">
+            <h5 className="text-md font-semibold">Additional Course Notes</h5>
+            <button
+              type="button"
+              onClick={addCourseNote}
+              className="bg-green-500 text-white px-3 py-1 rounded-lg flex items-center"
+            >
+              <FaPlus className="mr-2" /> Add Note
+            </button>
+          </div>
+
+          {courseNotesList.length === 0 ? (
+            <p className="text-sm text-gray-500">No additional notes added.</p>
+          ) : (
+            courseNotesList.map((note, idx) => (
+              <div
+                key={idx}
+                className="mb-3 p-3 border rounded-lg flex gap-3 items-center"
+              >
+                <div className="flex-1">
+                  <input
+                    type="text"
+                    placeholder="Note title"
+                    value={note.title}
+                    onChange={(e) => handleCourseNoteTitleChange(idx, e.target.value)}
+                    className="w-full p-2 border rounded"
+                  />
+                  {errors[`course_note_title_${idx}`] && (
+                    <p className="text-red-600 text-xs mt-1">{errors[`course_note_title_${idx}`]}</p>
+                  )}
+                </div>
+                <input
+                  type="file"
+                  accept=".pdf"
+                  onChange={(e) => handleCourseNoteFileChange(idx, e.target.files[0])}
+                  className="hidden"
+                  id={`course-note-${idx}`}
+                />
+                <label htmlFor={`course-note-${idx}`} className="cursor-pointer bg-blue-600 text-white px-3 py-2 rounded">
+                  Upload PDF
+                </label>
+                <div className="text-sm text-gray-600">{note.file ? note.file.name : "No file selected"}</div>
+                <button type="button" onClick={() => removeCourseNote(idx)} className="text-red-500 p-2">
+                  <FaTrash />
+                </button>
+              </div>
+            ))
+          )}
         </div>
       </div>
 
