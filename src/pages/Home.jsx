@@ -238,129 +238,82 @@ const Home = () => {
       {/* <MousePointer /> */}
 
       {/* Motivational Hero Section with Slider */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Background Slider */}
-        <div className="absolute inset-0 transition-opacity duration-1000 ease-in-out">
-          {motivationalQuotes.map((quote, index) => (
-            <div
-              key={index}
-              className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-1000 ${
-                index === currentSlide ? "opacity-100" : "opacity-0"
-              }`}
-              style={{ backgroundImage: `url(${quote.image})` }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-900/80 to-purple-900/80 backdrop-blur-[2px]"></div>
-            </div>
-          ))}
+     <section className="relative min-h-screen flex items-center bg-gradient-to-br from-emerald-50 via-white to-green-100 overflow-hidden">
+
+  {/* Soft Background Elements */}
+  <div className="absolute inset-0 -z-10">
+    <div className="absolute top-20 left-20 w-80 h-80 bg-green-200/40 rounded-full blur-3xl" />
+    <div className="absolute bottom-20 right-20 w-96 h-96 bg-emerald-300/30 rounded-full blur-3xl" />
+  </div>
+
+  <div className="max-w-7xl mx-auto px-1 grid md:grid-cols-2 gap-2 items-center">
+
+    {/* LEFT CONTENT */}
+    <div>
+      {/* Badge */}
+      <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-green-100 text-green-700 font-semibold text-sm mb-6">
+        🌙 Empowering J&K Students Since 2020
+      </div>
+
+      {/* Heading */}
+      <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-800 leading-tight">
+        Learn Smarter. <br />
+        Build Your Future in{" "}
+        <span className="text-green-700">Jammu & Kashmir</span>
+      </h1>
+
+      {/* Description */}
+      <p className="mt-5 text-lg text-slate-600 max-w-xl">
+        Live classes, recorded lectures & exam-focused courses for
+        11th, 12th, UG & PG students.
+      </p>
+
+      {/* CTA Buttons */}
+      <div className="flex gap-4 mt-8 flex-wrap">
+        <a
+          href="/courses"
+          className="flex items-center gap-2 px-7 py-3 rounded-xl bg-green-700 text-white font-semibold shadow-lg hover:bg-green-800 transition"
+        >
+          ▶ Start Learning Free
+        </a>
+
+        <a
+          href="/courses"
+          className="flex items-center gap-2 px-7 py-3 rounded-xl bg-white border border-slate-300 text-slate-700 font-semibold hover:bg-slate-100 transition"
+        >
+          Browse Courses →
+        </a>
+      </div>
+
+      {/* Trust Indicators */}
+      <div className="grid grid-cols-2 gap-4 mt-10 text-sm text-slate-600 max-w-md">
+        <div className="flex items-center gap-2">
+          ⭐ <span>4.8 Rated by 5,000+ students</span>
         </div>
-
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-          <div className="text-center">
-            <motion.div
-              initial={{ y: 30, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8 }}
-              className="max-w-4xl mx-auto"
-            >
-              {/* Badge */}
-              <motion.div
-                className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md rounded-full px-6 py-3 border border-white/30 mb-8"
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.2 }}
-              >
-                <HiLightBulb className="text-yellow-400 text-xl" />
-                <span className="text-white font-semibold text-sm">
-                  Empowering J&K Students Since 2020
-                </span>
-              </motion.div>
-
-              {/* Main Heading */}
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-                Quality Education for
-                <span className="block bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
-                  Jammu & Kashmir
-                </span>
-              </h1>
-
-              <p className="text-xl text-gray-200 mb-8 max-w-2xl mx-auto leading-relaxed">
-                Comprehensive learning platform for 11th, 12th, UG, PG, and
-                competitive exams. JKBOSE curriculum with expert faculty.
-              </p>
-
-              {/* Quote Slider */}
-              <div className="relative h-24 mb-8">
-                {motivationalQuotes.map((quote, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{
-                      opacity: index === currentSlide ? 1 : 0,
-                      y: index === currentSlide ? 0 : 20,
-                    }}
-                    transition={{ duration: 0.5 }}
-                    className={`absolute inset-0 flex flex-col items-center justify-center ${
-                      index === currentSlide
-                        ? "pointer-events-auto"
-                        : "pointer-events-none"
-                    }`}
-                  >
-                    <p className="text-lg sm:text-xl text-gray-200 italic text-center mb-2 max-w-3xl leading-relaxed">
-                      "{quote.text}"
-                    </p>
-                    <p className="text-white font-semibold text-sm">
-                      — {quote.author}
-                    </p>
-                  </motion.div>
-                ))}
-              </div>
-
-              {/* Slider Indicators */}
-              <div className="flex justify-center gap-2 mb-8">
-                {motivationalQuotes.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentSlide(index)}
-                    className={`w-3 h-3 rounded-full transition-all ${
-                      index === currentSlide
-                        ? "bg-yellow-400 w-8"
-                        : "bg-white/50 hover:bg-white/80"
-                    }`}
-                  />
-                ))}
-              </div>
-
-              {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Link
-                    to="/courses"
-                    className="group bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold shadow-2xl hover:shadow-blue-500/25 transition-all duration-300 flex items-center gap-3 text-lg"
-                  >
-                    <FaPlayCircle className="text-xl" />
-                    Start Learning Now
-                  </Link>
-                </motion.div>
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Link
-                    to="/courses"
-                    className="group bg-white/20 backdrop-blur-md border border-white/30 text-white px-8 py-4 rounded-xl font-semibold hover:bg-white/30 transition-all duration-300 flex items-center gap-3 text-lg"
-                  >
-                    Explore All Courses
-                    <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                </motion.div>
-              </div>
-            </motion.div>
-          </div>
+        <div className="flex items-center gap-2">
+          🔒 <span>150+ Courses</span>
         </div>
-      </section>
+        <div className="flex items-center gap-2">
+          🎓 <span>Expert Faculty</span>
+        </div>
+        <div className="flex items-center gap-2">
+          📘 <span>JKBOSE Focused</span>
+        </div>
+      </div>
+    </div>
+
+    {/* RIGHT IMAGE */}
+    <div className="hidden md:flex justify-center">
+      <img
+        src="/muslim-student.png" // replace with your image path
+        alt="Student"
+        className="w-full max-w-xl scale-110 drop-shadow-2xl scale-110 lg:scale-155"
+      />
+    </div>
+
+  </div>
+</section>
+
 
       {/* Stats Section */}
       <section className="py-16 bg-gray-50">

@@ -1084,13 +1084,10 @@ const CourseDetails = () => {
     (c) => c._id === selectedCourse?._id
   );
 
-  // Mock data for multiple PDFs (you'll replace this with actual API data)
-  const [multipleNotes, setMultipleNotes] = useState([
-    { id: 1, title: "Chapter 1 Notes", url: "https://example.com/notes1.pdf" },
-    { id: 2, title: "Chapter 2 Notes", url: "https://example.com/notes2.pdf" },
-    { id: 3, title: "Chapter 3 Notes", url: "https://example.com/notes3.pdf" },
-  ]);
+  // Notes uploaded with the course (chapter-wise / individual PDFs)
+  const multipleNotes = selectedCourse?.courseNotes || [];
 
+  // Placeholder for PYQs if needed; preserve existing mock until API provides PYQs array
   const [multiplePYQs, setMultiplePYQs] = useState([
     {
       id: 1,
@@ -1108,6 +1105,7 @@ const CourseDetails = () => {
       url: "https://example.com/pyq2021.pdf",
     },
   ]);
+  // chANGED 
 
   useEffect(() => {
     dispatch(fetchCourseById(id));
@@ -1290,11 +1288,11 @@ const CourseDetails = () => {
                     <div className="space-y-2">
                       {multipleNotes.map((note, index) => (
                         <div
-                          key={note.id}
+                          key={note._id || note.url || index}
                           className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100"
                         >
                           <span className="font-medium text-gray-800">
-                            {index + 1}. {note.title}
+                            {index + 1}. {note.title || `Note ${index + 1}`}
                           </span>
                           <button
                             onClick={() => openPdfInNewTab(note.url)}
