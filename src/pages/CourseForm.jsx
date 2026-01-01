@@ -71,13 +71,19 @@ const CourseForm = () => {
 
   // Multiple course-level notes entries (title + file)
   const [courseNotesList, setCourseNotesList] = useState([]);
-  const addCourseNote = () => setCourseNotesList((prev) => [...prev, { title: "", file: null }]);
-  const removeCourseNote = (idx) => setCourseNotesList((prev) => prev.filter((_, i) => i !== idx));
+  const addCourseNote = () =>
+    setCourseNotesList((prev) => [...prev, { title: "", file: null }]);
+  const removeCourseNote = (idx) =>
+    setCourseNotesList((prev) => prev.filter((_, i) => i !== idx));
   const handleCourseNoteTitleChange = (idx, val) =>
-    setCourseNotesList((prev) => prev.map((n, i) => (i === idx ? { ...n, title: val } : n)));
+    setCourseNotesList((prev) =>
+      prev.map((n, i) => (i === idx ? { ...n, title: val } : n))
+    );
   const handleCourseNoteFileChange = (idx, file) => {
     if (!file) return;
-    setCourseNotesList((prev) => prev.map((n, i) => (i === idx ? { ...n, file } : n)));
+    setCourseNotesList((prev) =>
+      prev.map((n, i) => (i === idx ? { ...n, file } : n))
+    );
     toast.success(`Course note "${file.name}" selected`);
   };
   const handleCoursePdfChange = (type, file) => {
@@ -330,7 +336,8 @@ const CourseForm = () => {
     // Validate course-level notes list
     courseNotesList.forEach((note, idx) => {
       if (note.file && !note.title.trim()) {
-        newErrors[`course_note_title_${idx}`] = "Title is required when uploading a note";
+        newErrors[`course_note_title_${idx}`] =
+          "Title is required when uploading a note";
       }
     });
 
@@ -1392,25 +1399,40 @@ const CourseForm = () => {
                     type="text"
                     placeholder="Note title"
                     value={note.title}
-                    onChange={(e) => handleCourseNoteTitleChange(idx, e.target.value)}
+                    onChange={(e) =>
+                      handleCourseNoteTitleChange(idx, e.target.value)
+                    }
                     className="w-full p-2 border rounded"
                   />
                   {errors[`course_note_title_${idx}`] && (
-                    <p className="text-red-600 text-xs mt-1">{errors[`course_note_title_${idx}`]}</p>
+                    <p className="text-red-600 text-xs mt-1">
+                      {errors[`course_note_title_${idx}`]}
+                    </p>
                   )}
                 </div>
                 <input
                   type="file"
                   accept=".pdf"
-                  onChange={(e) => handleCourseNoteFileChange(idx, e.target.files[0])}
+                  onChange={(e) =>
+                    handleCourseNoteFileChange(idx, e.target.files[0])
+                  }
                   className="hidden"
                   id={`course-note-${idx}`}
                 />
-                <label htmlFor={`course-note-${idx}`} className="cursor-pointer bg-blue-600 text-white px-3 py-2 rounded">
+                <label
+                  htmlFor={`course-note-${idx}`}
+                  className="cursor-pointer bg-blue-600 text-white px-3 py-2 rounded"
+                >
                   Upload PDF
                 </label>
-                <div className="text-sm text-gray-600">{note.file ? note.file.name : "No file selected"}</div>
-                <button type="button" onClick={() => removeCourseNote(idx)} className="text-red-500 p-2">
+                <div className="text-sm text-gray-600">
+                  {note.file ? note.file.name : "No file selected"}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => removeCourseNote(idx)}
+                  className="text-red-500 p-2"
+                >
                   <FaTrash />
                 </button>
               </div>

@@ -116,14 +116,14 @@ const AllCourses = () => {
                 <FiBook /> Manage Courses
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link
                 to="/admin/exams"
                 className="flex items-center gap-2 p-2 hover:bg-blue-700 rounded cursor-pointer"
               >
                 <FiClipboard /> Manage Exams
               </Link>
-            </li>
+            </li> */}
             <li>
               <Link
                 to="/admin/payments"

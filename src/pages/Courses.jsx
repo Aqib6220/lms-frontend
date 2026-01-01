@@ -4,17 +4,8 @@ import { fetchAllCourses } from "../redux/courseSlice";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 import CourseCard from "../components/CourseCard";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  FaFilter,
-  FaTimes,
-  FaSearch,
-  FaRupeeSign,
-  FaClock,
-  FaLayerGroup,
-  FaChalkboardTeacher,
-  FaSortAmountDown,
-} from "react-icons/fa";
-import { FiBook, FiAward } from "react-icons/fi";
+import { FaFilter, FaTimes, FaSearch, FaSortAmountDown } from "react-icons/fa";
+import { FiBook } from "react-icons/fi";
 import Loader from "../common/Loader";
 
 const slugify = (value = "") =>

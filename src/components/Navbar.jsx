@@ -783,7 +783,7 @@ function Navbar() {
                       <FiBook className="text-lg" />
                       My Courses
                     </Link>
-                    {user && (
+                    {/* {user && (
                       <Link
                         to="/exams"
                         className="flex items-center gap-3 text-base font-medium text-gray-700 hover:text-blue-600 py-2 px-2 rounded-lg transition-all"
@@ -792,7 +792,7 @@ function Navbar() {
                         <FiBook className="text-lg" />
                         Practice Tests
                       </Link>
-                    )}
+                    )} */}
                     <button
                       className="flex items-center gap-3 w-full text-red-500 font-medium hover:text-red-700 py-2 px-2 text-left rounded-lg transition-all"
                       onClick={handleLogout}

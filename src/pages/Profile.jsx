@@ -240,10 +240,10 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCurrentUser, updateUser } from "../redux/userSlice";
 import { Link } from "react-router-dom";
-import { fetchResults } from "../redux/examSlice";
+// import { fetchResults } from "../redux/examSlice";
 import { getEnrolledCourses } from "../redux/courseSlice";
 import EnrolledCourses from "../components/EnrolledCourses";
-import ExamResults from "../components/ExamResults";
+// import ExamResults from "../components/ExamResults";
 import { motion } from "framer-motion";
 import ChangePasswordModal from "./ChangePassword";
 import {
@@ -274,9 +274,9 @@ const Profile = () => {
   const dispatch = useDispatch();
   const { currentUser, loading, error } = useSelector((state) => state.users);
   const { enrolledCourses } = useSelector((state) => state.courses);
-  const { results, loading: resultsLoading } = useSelector(
-    (state) => state.exam
-  );
+  // const { results, loading: resultsLoading } = useSelector(
+  //   (state) => state.exam
+  // );
 
   const [preview, setPreview] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -286,7 +286,7 @@ const Profile = () => {
   useEffect(() => {
     dispatch(fetchCurrentUser());
     dispatch(getEnrolledCourses());
-    dispatch(fetchResults());
+    // dispatch(fetchResults());
   }, [dispatch]);
 
   const handleFileChange = (event) => {
@@ -350,33 +350,12 @@ const Profile = () => {
 
   // Stats cards data
   const stats = [
-    {
-      label: "Enrolled Courses",
-      value: enrolledCourses?.length || 0,
-      icon: FaBook,
-      color: "blue",
-      bgColor: "from-blue-500 to-blue-600",
-    },
-    {
-      label: "Exams Taken",
-      value: results?.length || 0,
-      icon: FaCertificate,
-      color: "green",
-      bgColor: "from-green-500 to-green-600",
-    },
     // {
-    //   label: "Learning Hours",
-    //   value: "24+",
-    //   icon: FaClock,
-    //   color: "purple",
-    //   bgColor: "from-purple-500 to-purple-600",
-    // },
-    // {
-    //   label: "Progress Rate",
-    //   value: "75%",
-    //   icon: FaChartLine,
-    //   color: "orange",
-    //   bgColor: "from-orange-500 to-orange-600",
+    //   label: "Enrolled Courses",
+    //   value: enrolledCourses?.length || 0,
+    //   icon: FaBook,
+    //   color: "blue",
+    //   bgColor: "from-blue-500 to-blue-600",
     // },
   ];
 
@@ -394,7 +373,7 @@ const Profile = () => {
     const icons = {
       learner: FaGraduationCap,
       trainer: FaChalkboardTeacher,
-      examinee: FaCertificate,
+      // examinee: FaCertificate,
       admin: FaUserShield,
     };
     return icons[role] || FaUser;
@@ -411,26 +390,13 @@ const Profile = () => {
       color: "from-blue-500 to-cyan-500",
       description: "Add new course content",
     },
-    {
-      label: "Create Exam",
-      icon: FaFileAlt,
-      path: "/create-exam",
-      color: "from-green-500 to-emerald-500",
-      description: "Design new tests",
-    },
+
     {
       label: "My Courses",
       icon: FaList,
       path: "/trainer-courses",
       color: "from-purple-500 to-pink-500",
       description: "Manage your courses",
-    },
-    {
-      label: "My Exams",
-      icon: FaChartBar,
-      path: "/trainer-exams",
-      color: "from-orange-500 to-red-500",
-      description: "View exam analytics",
     },
   ];
 
@@ -515,12 +481,12 @@ const Profile = () => {
                     </p>
                     <p className="text-xs text-gray-600">Courses</p>
                   </div>
-                  <div className="text-center">
+                  {/* <div className="text-center">
                     <p className="text-2xl font-bold text-gray-900">
                       {results?.length || 0}
                     </p>
                     <p className="text-xs text-gray-600">Exams</p>
-                  </div>
+                  </div> */}
                 </div>
               </div>
 
@@ -579,7 +545,7 @@ const Profile = () => {
               {/* Tabs */}
               <div className="border-b border-gray-200">
                 <div className="flex overflow-x-auto">
-                  {["overview", "courses", "results"].map((tab) => (
+                  {["overview", "courses"].map((tab) => (
                     <button
                       key={tab}
                       onClick={() => setActiveTab(tab)}
@@ -748,7 +714,7 @@ const Profile = () => {
                         </motion.div>
                       )}
 
-                    {(currentUser.role === "examinee" ||
+                    {/* {(currentUser.role === "examinee" ||
                       currentUser.role === "learner") &&
                       results?.length > 0 && (
                         <motion.div
@@ -761,7 +727,7 @@ const Profile = () => {
                           </h3>
                           <ExamResults results={results.slice(0, 3)} />
                         </motion.div>
-                      )}
+                      )} */}
                   </div>
                 )}
 
@@ -776,14 +742,14 @@ const Profile = () => {
                 )}
 
                 {/* Results Tab */}
-                {activeTab === "results" && results?.length > 0 && (
+                {/* {activeTab === "results" && results?.length > 0 && (
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                   >
                     <ExamResults results={results} />
                   </motion.div>
-                )}
+                )} */}
               </div>
             </div>
 
