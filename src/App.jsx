@@ -10,6 +10,10 @@ import LoadingScreen from "./components/LoadingScreen";
 import NotFound from "./common/NotFound.jsx";
 import ScrollToTop from "./common/ScrollToTop.jsx";
 
+import useSecurity from "./hooks/useSecurity.js";
+import { useSelector } from "react-redux";
+import UserWatermark from "./common/UserWatermark.jsx";
+
 // Lazy Loading Pages
 const Home = lazy(() => import("./pages/Home.jsx"));
 const CourseDetails = lazy(() => import("./pages/CourseDetails.jsx"));
@@ -29,6 +33,11 @@ const AllCourses = lazy(() => import("./components/AllCourses.jsx"));
 const TrainerCourses = lazy(() => import("./components/TrainerCourses.jsx"));
 
 function App() {
+  const currentUser = useSelector((state) => state.users.currentUser);
+  const watermarkText = currentUser
+    ? `${currentUser.fullName?.trim()} • ${currentUser.email}`
+    : "";
+  useSecurity(watermarkText);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -42,6 +51,7 @@ function App() {
   return (
     <Router>
       <ScrollToTop />
+      {currentUser && <UserWatermark text={watermarkText} />}
       <Navbar />
       <ToastContainer position="bottom-right" autoClose={3000} />
       <div className="">
