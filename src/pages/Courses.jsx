@@ -98,7 +98,7 @@ const CoursesList = () => {
   const [filteredCourses, setFilteredCourses] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
-  const itemsPerPage = 9;
+  const itemsPerPage = 10;
 
   // Filter states
   const [priceFilter, setPriceFilter] = useState("");
@@ -547,9 +547,17 @@ const CoursesList = () => {
                 <p className="text-sm text-gray-600">
                   Showing{" "}
                   <span className="font-semibold text-gray-900">
+                    {(filteredCourses.length > 0) ? ("" + ((currentPage - 1) * itemsPerPage + 1)) : 0}
+                  </span>
+                  {" - "}
+                  <span className="font-semibold text-gray-900">
+                    {Math.min(currentPage * itemsPerPage, filteredCourses.length)}
+                  </span>
+                  {" of "}
+                  <span className="font-semibold text-gray-900">
                     {filteredCourses.length}
-                  </span>{" "}
-                  courses
+                  </span>
+                  {" courses"}
                 </p>
               </div>
             </motion.div>
