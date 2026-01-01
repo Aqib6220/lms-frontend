@@ -64,7 +64,6 @@ const adminSlice = createSlice({
   initialState: {
     totalUsers: 0,
     totalCourses: 0,
-    totalExams: 0,
     bannedUsers: [], // ✅ New state to track banned users
     loading: false,
     error: null,
@@ -82,7 +81,6 @@ const adminSlice = createSlice({
         state.loading = false;
         state.totalUsers = action.payload.totalUsers;
         state.totalCourses = action.payload.totalCourses;
-        state.totalExams = action.payload.totalExams;
         state.bannedUsers = action.payload.bannedUsers || []; // ✅ Load banned users if provided
       })
       .addCase(fetchAdminStats.rejected, (state, action) => {

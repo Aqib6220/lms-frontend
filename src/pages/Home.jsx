@@ -4,8 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchAllCourses } from "../redux/courseSlice";
 import {
   FaArrowRight,
-  FaStar,
-  FaPlayCircle,
   FaUsers,
   FaCertificate,
   FaClock,
@@ -16,10 +14,9 @@ import {
   FaUniversity,
   FaAward,
 } from "react-icons/fa";
-import { HiAcademicCap, HiLightBulb } from "react-icons/hi";
-import { MdOndemandVideo, MdSupportAgent, MdSchool } from "react-icons/md";
+import { HiAcademicCap } from "react-icons/hi";
+import { MdSupportAgent, MdSchool } from "react-icons/md";
 import { GiTeacher } from "react-icons/gi";
-import herobg from "../assets/herobg.jpg";
 import { useEffect, useState } from "react";
 import CourseCard from "../components/CourseCard";
 import Testimonial from "../components/Testimonial";
@@ -238,82 +235,78 @@ const Home = () => {
       {/* <MousePointer /> */}
 
       {/* Motivational Hero Section with Slider */}
-     <section className="relative min-h-screen flex items-center bg-gradient-to-br from-emerald-50 via-white to-green-100 overflow-hidden">
-
-  {/* Soft Background Elements */}
-  <div className="absolute inset-0 -z-10">
-    <div className="absolute top-20 left-20 w-80 h-80 bg-green-200/40 rounded-full blur-3xl" />
-    <div className="absolute bottom-20 right-20 w-96 h-96 bg-emerald-300/30 rounded-full blur-3xl" />
-  </div>
-
-  <div className="max-w-7xl mx-auto px-1 grid md:grid-cols-2 gap-2 items-center">
-
-    {/* LEFT CONTENT */}
-    <div>
-      {/* Badge */}
-      <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-green-100 text-green-700 font-semibold text-sm mb-6">
-        🌙 Empowering J&K Students Since 2020
-      </div>
-
-      {/* Heading */}
-      <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-800 leading-tight">
-        Learn Smarter. <br />
-        Build Your Future in{" "}
-        <span className="text-green-700">Jammu & Kashmir</span>
-      </h1>
-
-      {/* Description */}
-      <p className="mt-5 text-lg text-slate-600 max-w-xl">
-        Live classes, recorded lectures & exam-focused courses for
-        11th, 12th, UG & PG students.
-      </p>
-
-      {/* CTA Buttons */}
-      <div className="flex gap-4 mt-8 flex-wrap">
-        <a
-          href="/courses"
-          className="flex items-center gap-2 px-7 py-3 rounded-xl bg-green-700 text-white font-semibold shadow-lg hover:bg-green-800 transition"
-        >
-          ▶ Start Learning Free
-        </a>
-
-        <a
-          href="/courses"
-          className="flex items-center gap-2 px-7 py-3 rounded-xl bg-white border border-slate-300 text-slate-700 font-semibold hover:bg-slate-100 transition"
-        >
-          Browse Courses →
-        </a>
-      </div>
-
-      {/* Trust Indicators */}
-      <div className="grid grid-cols-2 gap-4 mt-10 text-sm text-slate-600 max-w-md">
-        <div className="flex items-center gap-2">
-          ⭐ <span>4.8 Rated by 5,000+ students</span>
+      <section className="px-3 relative min-h-screen flex items-center bg-gradient-to-br from-emerald-50 via-white to-green-100 overflow-hidden">
+        {/* Soft Background Elements */}
+        <div className="absolute inset-0 -z-10">
+          <div className="absolute top-20 left-20 w-80 h-80 bg-green-200/40 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 right-20 w-96 h-96 bg-emerald-300/30 rounded-full blur-3xl" />
         </div>
-        <div className="flex items-center gap-2">
-          🔒 <span>150+ Courses</span>
-        </div>
-        <div className="flex items-center gap-2">
-          🎓 <span>Expert Faculty</span>
-        </div>
-        <div className="flex items-center gap-2">
-          📘 <span>JKBOSE Focused</span>
-        </div>
-      </div>
-    </div>
 
-    {/* RIGHT IMAGE */}
-    <div className="hidden md:flex justify-center">
-      <img
-        src="/muslim-student.png" // replace with your image path
-        alt="Student"
-        className="w-full max-w-xl scale-110 drop-shadow-2xl scale-110 lg:scale-155"
-      />
-    </div>
+        <div className="max-w-7xl mx-auto px-1 grid md:grid-cols-2 gap-2 items-center">
+          {/* LEFT CONTENT */}
+          <div>
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-green-100 text-green-700 font-semibold text-sm mb-6">
+              🌙 Empowering J&K Students Since 2020
+            </div>
 
-  </div>
-</section>
+            {/* Heading */}
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-800 leading-tight">
+              Learn Smarter. <br />
+              Build Your Future in{" "}
+              <span className="text-green-700">Jammu & Kashmir</span>
+            </h1>
 
+            {/* Description */}
+            <p className="mt-5 text-lg text-slate-600 max-w-xl">
+              Live classes, recorded lectures & exam-focused courses for 11th,
+              12th, UG & PG students.
+            </p>
+
+            {/* CTA Buttons */}
+            <div className="flex gap-4 mt-8 flex-wrap">
+              <Link
+                to="/courses"
+                className="flex items-center gap-2 px-7 py-3 rounded-xl bg-green-700 text-white font-semibold shadow-lg hover:bg-green-800 transition"
+              >
+                ▶ Start Learning Free
+              </Link>
+
+              <Link
+                to="/courses"
+                className="flex items-center gap-2 px-7 py-3 rounded-xl bg-white border border-slate-300 text-slate-700 font-semibold hover:bg-slate-100 transition"
+              >
+                Browse Courses →
+              </Link>
+            </div>
+
+            {/* Trust Indicators */}
+            <div className="grid grid-cols-2 gap-4 mt-10 text-sm text-slate-600 max-w-md">
+              <div className="flex items-center gap-2">
+                ⭐ <span>4.8 Rated by 5,000+ students</span>
+              </div>
+              <div className="flex items-center gap-2">
+                🔒 <span>150+ Courses</span>
+              </div>
+              <div className="flex items-center gap-2">
+                🎓 <span>Expert Faculty</span>
+              </div>
+              <div className="flex items-center gap-2">
+                📘 <span>JKBOSE Focused</span>
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT IMAGE */}
+          <div className="hidden md:flex justify-center">
+            <img
+              src="/muslim-student.png" // replace with your image path
+              alt="Student"
+              className="w-full max-w-xl scale-110 drop-shadow-2xl scale-110 lg:scale-155"
+            />
+          </div>
+        </div>
+      </section>
 
       {/* Stats Section */}
       <section className="py-16 bg-gray-50">

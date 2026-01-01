@@ -180,7 +180,9 @@ function Footer() {
                   name: "Competitive Exams",
                   path: "/courses/competitive-exams",
                 },
-                { name: "Practice Tests", path: "/exams" },
+                {
+                  /* { name: "Practice Tests", path: "/exams" }, */
+                },
               ].map((link, index) => (
                 <li key={index}>
                   <Link

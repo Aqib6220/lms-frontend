@@ -1,12 +1,14 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAdminStats } from "../redux/adminSlice";
-import { FiUsers, FiBook, FiClipboard, FiDollarSign, FiBarChart, FiHome } from "react-icons/fi";
+import { FiUsers, FiBook, FiDollarSign, FiBarChart } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
 const AdminDashboard = () => {
   const dispatch = useDispatch();
-  const { totalUsers, totalCourses, totalExams, loading, error } = useSelector((state) => state.admin);
+  const { totalUsers, totalCourses, loading, error } = useSelector(
+    (state) => state.admin
+  );
 
   useEffect(() => {
     dispatch(fetchAdminStats());
@@ -20,27 +22,35 @@ const AdminDashboard = () => {
         <nav>
           <ul className="space-y-4">
             <li>
-              <Link to="/admin/usersList" className="flex items-center gap-2 p-2 hover:bg-blue-700 rounded">
+              <Link
+                to="/admin/usersList"
+                className="flex items-center gap-2 p-2 hover:bg-blue-700 rounded"
+              >
                 <FiUsers /> Manage Users
               </Link>
             </li>
             <li>
-              <Link to="/admin/coursesList" className="flex items-center gap-2 p-2 hover:bg-blue-700 rounded">
+              <Link
+                to="/admin/coursesList"
+                className="flex items-center gap-2 p-2 hover:bg-blue-700 rounded"
+              >
                 <FiBook /> Manage Courses
               </Link>
             </li>
+
             <li>
-              <Link to="/admin/exams" className="flex items-center gap-2 p-2 hover:bg-blue-700 rounded">
-                <FiClipboard /> Manage Exams
-              </Link>
-            </li>
-            <li>
-              <Link to="/admin/payments" className="flex items-center gap-2 p-2 hover:bg-blue-700 rounded">
+              <Link
+                to="/admin/payments"
+                className="flex items-center gap-2 p-2 hover:bg-blue-700 rounded"
+              >
                 <FiDollarSign /> Payments
               </Link>
             </li>
             <li>
-              <Link to="/admin/reports" className="flex items-center gap-2 p-2 hover:bg-blue-700 rounded">
+              <Link
+                to="/admin/reports"
+                className="flex items-center gap-2 p-2 hover:bg-blue-700 rounded"
+              >
                 <FiBarChart /> Reports & Analytics
               </Link>
             </li>
@@ -70,14 +80,6 @@ const AdminDashboard = () => {
             <div>
               <h3 className="text-lg font-semibold">Total Courses</h3>
               <p className="text-2xl">{loading ? "..." : totalCourses}</p>
-            </div>
-          </div>
-
-          <div className="p-5 bg-white shadow rounded-lg flex items-center">
-            <FiClipboard className="text-red-500 text-3xl mr-3" />
-            <div>
-              <h3 className="text-lg font-semibold">Total Exams</h3>
-              <p className="text-2xl">{loading ? "..." : totalExams}</p>
             </div>
           </div>
         </div>
