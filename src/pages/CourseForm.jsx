@@ -85,6 +85,19 @@ const CourseForm = () => {
     setCoursePdfs((prev) => ({ ...prev, [type]: file }));
     toast.success(`${type} uploaded`);
   };
+
+  // ===== Previous Year Papers (multiple) =====
+  const [previousPapersList, setPreviousPapersList] = useState([]);
+  const addPreviousPaper = () => setPreviousPapersList((prev) => [...prev, { title: "", file: null }]);
+  const removePreviousPaper = (idx) => setPreviousPapersList((prev) => prev.filter((_, i) => i !== idx));
+  const handlePreviousPaperTitleChange = (idx, val) =>
+    setPreviousPapersList((prev) => prev.map((n, i) => (i === idx ? { ...n, title: val } : n)));
+  const handlePreviousPaperFileChange = (idx, file) => {
+    if (!file) return;
+    setPreviousPapersList((prev) => prev.map((n, i) => (i === idx ? { ...n, file } : n)));
+    toast.success(`Previous paper "${file.name}" selected`);
+  };
+
   // Enhanced educational structure
   const classLevels = [
     { value: "class-11", label: "Class 11th", icon: <FaGraduationCap /> },
@@ -331,6 +344,13 @@ const CourseForm = () => {
     courseNotesList.forEach((note, idx) => {
       if (note.file && !note.title.trim()) {
         newErrors[`course_note_title_${idx}`] = "Title is required when uploading a note";
+      }
+    });
+
+    // Validate previous year papers list
+    previousPapersList.forEach((paper, idx) => {
+      if (paper.file && !paper.title.trim()) {
+        newErrors[`previous_paper_title_${idx}`] = "Title is required when uploading a previous paper";
       }
     });
 
@@ -759,6 +779,15 @@ const CourseForm = () => {
         if (n.file) courseData.append("courseNotes", n.file);
       });
       courseData.append("courseNotesMeta", JSON.stringify(meta));
+    }
+
+    // Append previous year papers (multiple)
+    if (previousPapersList.length > 0) {
+      const meta = previousPapersList.map((n) => ({ title: n.title || "" }));
+      previousPapersList.forEach((n) => {
+        if (n.file) courseData.append("previousPapers", n.file);
+      });
+      courseData.append("previousPapersMeta", JSON.stringify(meta));
     }
     try {
       await dispatch(createCourse(courseData)).unwrap();
@@ -1411,6 +1440,58 @@ const CourseForm = () => {
                 </label>
                 <div className="text-sm text-gray-600">{note.file ? note.file.name : "No file selected"}</div>
                 <button type="button" onClick={() => removeCourseNote(idx)} className="text-red-500 p-2">
+                  <FaTrash />
+                </button>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Previous Year Papers (multiple) */}
+        <div className="mt-6 mb-6">
+          <div className="flex items-center justify-between mb-3">
+            <h5 className="text-md font-semibold">Previous Year Papers</h5>
+            <button
+              type="button"
+              onClick={addPreviousPaper}
+              className="bg-green-500 text-white px-3 py-1 rounded-lg flex items-center"
+            >
+              <FaPlus className="mr-2" /> Add Paper
+            </button>
+          </div>
+
+          {previousPapersList.length === 0 ? (
+            <p className="text-sm text-gray-500">No previous year papers added.</p>
+          ) : (
+            previousPapersList.map((paper, idx) => (
+              <div
+                key={idx}
+                className="mb-3 p-3 border rounded-lg flex gap-3 items-center"
+              >
+                <div className="flex-1">
+                  <input
+                    type="text"
+                    placeholder="Paper title (e.g., 2023 PYQ)"
+                    value={paper.title}
+                    onChange={(e) => handlePreviousPaperTitleChange(idx, e.target.value)}
+                    className="w-full p-2 border rounded"
+                  />
+                  {errors[`previous_paper_title_${idx}`] && (
+                    <p className="text-red-600 text-xs mt-1">{errors[`previous_paper_title_${idx}`]}</p>
+                  )}
+                </div>
+                <input
+                  type="file"
+                  accept=".pdf"
+                  className="hidden"
+                  id={`previous-paper-${idx}`}
+                  onChange={(e) => handlePreviousPaperFileChange(idx, e.target.files[0])}
+                />
+                <label htmlFor={`previous-paper-${idx}`} className="cursor-pointer bg-blue-600 text-white px-3 py-2 rounded">
+                  Upload PDF
+                </label>
+                <div className="text-sm text-gray-600">{paper.file ? paper.file.name : "No file selected"}</div>
+                <button type="button" onClick={() => removePreviousPaper(idx)} className="text-red-500 p-2">
                   <FaTrash />
                 </button>
               </div>
