@@ -1087,24 +1087,12 @@ const CourseDetails = () => {
   // Notes uploaded with the course (chapter-wise / individual PDFs)
   const multipleNotes = selectedCourse?.courseNotes || [];
 
-  // Placeholder for PYQs if needed; preserve existing mock until API provides PYQs array
-  const [multiplePYQs, setMultiplePYQs] = useState([
-    {
-      id: 1,
-      title: "2023 Previous Paper",
-      url: "https://example.com/pyq2023.pdf",
-    },
-    {
-      id: 2,
-      title: "2022 Previous Paper",
-      url: "https://example.com/pyq2022.pdf",
-    },
-    {
-      id: 3,
-      title: "2021 Previous Paper",
-      url: "https://example.com/pyq2021.pdf",
-    },
-  ]);
+  // PYQs from API
+  const [multiplePYQs, setMultiplePYQs] = useState([]);
+
+  useEffect(() => {
+    setMultiplePYQs(selectedCourse?.previousPapers || []);
+  }, [selectedCourse]);
   // chANGED 
 
   useEffect(() => {
@@ -1377,7 +1365,7 @@ const CourseDetails = () => {
                     <div className="space-y-2">
                       {multiplePYQs.map((paper, index) => (
                         <div
-                          key={paper.id}
+                          key={paper._id || index}
                           className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100"
                         >
                           <span className="font-medium text-gray-800">
