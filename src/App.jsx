@@ -13,6 +13,7 @@ import ScrollToTop from "./common/ScrollToTop.jsx";
 import useSecurity from "./hooks/useSecurity.js";
 import { useSelector } from "react-redux";
 import UserWatermark from "./common/UserWatermark.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 // Lazy Loading Pages
 const Home = lazy(() => import("./pages/Home.jsx"));
@@ -71,11 +72,20 @@ function App() {
               element={<CoursesList />}
             />
             <Route path="/updateUser" element={<UpdateUserDetails />} />
-            <Route path="/admin/usersList" element={<UsersList />} />
+            {/* Public/Internal routes */}
             <Route path="/users/:id" element={<UserDetails />} />
-            <Route path="/admin/Dash" element={<AdminDashboard />} />
-            <Route path="/admin/coursesList" element={<AllCourses />} />
-            <Route path="/trainer-courses" element={<TrainerCourses />} />
+
+            {/* Admin protected routes */}
+            <Route element={<ProtectedRoute roles={["admin"]} />}>
+              <Route path="/admin/Dash" element={<AdminDashboard />} />
+              <Route path="/admin/coursesList" element={<AllCourses />} />
+              <Route path="/admin/usersList" element={<UsersList />} />
+            </Route>
+
+            {/* Trainer routes (if needed) */}
+            <Route element={<ProtectedRoute roles={["trainer", "admin"]} />}>
+              <Route path="/trainer-courses" element={<TrainerCourses />} />
+            </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
