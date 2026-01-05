@@ -52,7 +52,7 @@ function App() {
   return (
     <Router>
       <ScrollToTop />
-      {currentUser && <UserWatermark text={watermarkText} />}
+      {/* {currentUser && <UserWatermark text={watermarkText} />} */}
       <Navbar />
       <ToastContainer position="bottom-right" autoClose={3000} />
       <div className="">

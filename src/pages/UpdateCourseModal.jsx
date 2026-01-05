@@ -1,4 +1,8 @@
 // // import React, { useState } from "react";
+import React from "react";
+import { toast } from "react-toastify";
+import { FaTimes } from "react-icons/fa";
+import CourseForm from "./CourseForm";
 // // import { motion } from "framer-motion";
 // // import { useDispatch } from "react-redux";
 // // import { updateCourse } from "../redux/courseSlice";
@@ -583,330 +587,7 @@
 
 // export default UpdateCourseModal;
 
-import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { updateCourse } from "../redux/courseSlice";
-import { toast } from "react-toastify";
-import {
-  FaTimes,
-  FaUpload,
-  FaYoutube,
-  FaPlus,
-  FaTrash,
-  FaSpinner,
-  FaBook,
-  FaGraduationCap,
-  FaRupeeSign,
-  FaClock,
-  FaListAlt,
-  FaVideo,
-  FaCheckCircle,
-  FaArrowLeft,
-  FaChalkboardTeacher,
-  FaLanguage,
-  FaCalculator,
-  FaFlask,
-  FaGlobe,
-  FaHistory,
-  FaChevronRight,
-  FaChevronLeft,
-  FaChevronDown,
-  FaChevronUp,
-  FaExclamationCircle,
-  FaFilePdf,
-  FaLayerGroup,
-} from "react-icons/fa";
 
-const UpdateCourseModal = ({ course, isOpen, onClose }) => {
-  const dispatch = useDispatch();
-
-  // Initialize form data from existing course
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    classLevel: "",
-    subject: "",
-    board: "JKBOSE",
-    price: "",
-    duration: "",
-    prerequisites: "",
-    courseLevel: "",
-
-    certificationAvailable: false,
-    thumbnail: null,
-    thumbnailPreview: "",
-    language: "English",
-    targetAudience: "",
-  });
-  // console.log(formData);
-  const [chapters, setChapters] = useState([]);
-  const [expandedChapters, setExpandedChapters] = useState({});
-  const [syllabus, setSyllabus] = useState([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [currentStep, setCurrentStep] = useState(1);
-  const [errors, setErrors] = useState({});
-  const [touched, setTouched] = useState({});
-  // console.log(formData)
-  // Educational structure
-  const classLevels = [
-    { value: "class-11", label: "Class 11th", icon: <FaGraduationCap /> },
-    { value: "class-12", label: "Class 12th", icon: <FaGraduationCap /> },
-    { value: "ug", label: "Undergraduate", icon: <FaGraduationCap /> },
-    { value: "pg", label: "Postgraduate", icon: <FaGraduationCap /> },
-    { value: "competitive", label: "Competitive Exams", icon: <FaBook /> },
-    {
-      value: "skill-dev",
-      label: "Skill Development",
-      icon: <FaChalkboardTeacher />,
-    },
-  ];
-
-  const subjects = {
-    "class-11": [
-      { value: "physics", label: "Physics", icon: <FaCalculator /> },
-      { value: "chemistry", label: "Chemistry", icon: <FaFlask /> },
-      { value: "mathematics", label: "Mathematics", icon: <FaCalculator /> },
-      { value: "Botany", label: "Botany", icon: <FaFlask /> },
-      { value: "Zoology", label: "Zoology", icon: <FaFlask /> },
-      { value: "english", label: "English", icon: <FaLanguage /> },
-      { value: "hindi", label: "Hindi", icon: <FaLanguage /> },
-      { value: "urdu", label: "Urdu", icon: <FaLanguage /> },
-      { value: "history", label: "History", icon: <FaHistory /> },
-      { value: "geography", label: "Geography", icon: <FaGlobe /> },
-      { value: "economics", label: "Economics", icon: <FaCalculator /> },
-      { value: "accountancy", label: "Accountancy", icon: <FaCalculator /> },
-      {
-        value: "business-studies",
-        label: "Business Studies",
-        icon: <FaBook />,
-      },
-    ],
-    "class-12": [
-      { value: "physics", label: "Physics", icon: <FaCalculator /> },
-      { value: "chemistry", label: "Chemistry", icon: <FaFlask /> },
-      { value: "mathematics", label: "Mathematics", icon: <FaCalculator /> },
-      { value: "Botany", label: "Botany", icon: <FaFlask /> },
-      { value: "Zoology", label: "Zoology", icon: <FaFlask /> },
-      { value: "english", label: "English", icon: <FaLanguage /> },
-      { value: "hindi", label: "Hindi", icon: <FaLanguage /> },
-      { value: "urdu", label: "Urdu", icon: <FaLanguage /> },
-      { value: "history", label: "History", icon: <FaHistory /> },
-      { value: "geography", label: "Geography", icon: <FaGlobe /> },
-      {
-        value: "political-science",
-        label: "Political Science",
-        icon: <FaBook />,
-      },
-      { value: "economics", label: "Economics", icon: <FaCalculator /> },
-      { value: "accountancy", label: "Accountancy", icon: <FaCalculator /> },
-      {
-        value: "business-studies",
-        label: "Business Studies",
-        icon: <FaBook />,
-      },
-    ],
-    ug: [
-      { value: "physics", label: "Physics", icon: <FaCalculator /> },
-      { value: "chemistry", label: "Chemistry", icon: <FaFlask /> },
-      { value: "mathematics", label: "Mathematics", icon: <FaCalculator /> },
-      { value: "Botany", label: "Botany", icon: <FaFlask /> },
-      { value: "Zoology", label: "Zoology", icon: <FaFlask /> },
-      { value: "english", label: "English", icon: <FaLanguage /> },
-      { value: "history", label: "History", icon: <FaHistory /> },
-      { value: "bcom", label: "B.Com", icon: <FaCalculator /> },
-      { value: "bca", label: "BCA", icon: <FaCalculator /> },
-    ],
-    pg: [
-      { value: "msc-physics", label: "M.Sc Physics", icon: <FaCalculator /> },
-      { value: "msc-chemistry", label: "M.Sc Chemistry", icon: <FaFlask /> },
-      {
-        value: "msc-mathematics",
-        label: "M.Sc Mathematics",
-        icon: <FaCalculator />,
-      },
-      { value: "ma-english", label: "M.A English", icon: <FaLanguage /> },
-      { value: "ma-history", label: "M.A History", icon: <FaHistory /> },
-      { value: "mcom", label: "M.Com", icon: <FaCalculator /> },
-    ],
-    competitive: [
-      { value: "jkbose", label: "JKBOSE Exams", icon: <FaBook /> },
-      { value: "jkssb", label: "JKSSB Exams", icon: <FaBook /> },
-      { value: "jkpsc", label: "JKPSC Exams", icon: <FaBook /> },
-      { value: "neet", label: "NEET", icon: <FaFlask /> },
-      { value: "jee", label: "JEE", icon: <FaCalculator /> },
-      { value: "cuet", label: "CUET", icon: <FaBook /> },
-    ],
-    "skill-dev": [
-      { value: "kashmiri-arts", label: "Kashmiri Arts", icon: <FaGlobe /> },
-      {
-        value: "kashmiri-language",
-        label: "Kashmiri Language",
-        icon: <FaLanguage />,
-      },
-      { value: "urdu-language", label: "Urdu Language", icon: <FaLanguage /> },
-      {
-        value: "computer-basics",
-        label: "Computer Basics",
-        icon: <FaCalculator />,
-      },
-      {
-        value: "digital-literacy",
-        label: "Digital Literacy",
-        icon: <FaCalculator />,
-      },
-    ],
-  };
-
-  const boards = [
-    { value: "KUKU", label: "KU" },
-    { value: "JKBOSE", label: "JKBOSE" },
-    { value: "CBSE", label: "CBSE" },
-    { value: "ICSE", label: "ICSE" },
-    { value: "State Board", label: "State Board" },
-  ];
-
-  const languages = [
-    { value: "English", label: "English" },
-    { value: "Hindi", label: "Hindi" },
-    { value: "Urdu", label: "Urdu" },
-    { value: "Kashmiri", label: "Kashmiri" },
-  ];
-
-  // Initialize form with course data
-  useEffect(() => {
-    if (course && isOpen) {
-      // Parse existing lessons into chapter structure
-      const existingChapters = course.chapters || [];
-      if (existingChapters.length === 0 && course.lessons) {
-        // Convert old lesson format to chapter format
-        const defaultChapter = {
-          title: "Course Content",
-          description: "",
-          lessons: course.lessons.map((lesson) => ({
-            title: lesson.title,
-            description: lesson.description || "",
-            videoType: lesson.videoUrl?.includes("youtube")
-              ? "youtube"
-              : "upload",
-            videoUrl: lesson.videoUrl || "",
-            isFreePreview: lesson.isFreePreview || false,
-            duration: lesson.duration || "",
-            notes: null,
-            _id: lesson._id,
-          })),
-        };
-        existingChapters.push(defaultChapter);
-      }
-
-      setFormData({
-        title: course.title || "",
-        description: course.description || "",
-        classLevel: course.classLevel || "",
-        subject: course.subject || "",
-        board: course.board || "JKBOSE",
-        price: course.price || "",
-        duration: course.duration || "",
-        prerequisites: course.prerequisites || "",
-        courseLevel: course.courseLevel || "",
-        certificationAvailable: course.certificationAvailable || false,
-        thumbnail: null,
-        thumbnailPreview: course.thumbnail || "",
-        language: course.language || "English",
-        targetAudience: course.targetAudience || "",
-      });
-
-      setChapters(existingChapters);
-      setSyllabus(course.syllabus || []);
-      setCurrentStep(1); // Reset to step 1 when modal opens
-      setErrors({}); // Clear errors
-    }
-  }, [course, isOpen]);
-
-  const validateStep1 = () => {
-    const newErrors = {};
-    if (!formData.classLevel.trim())
-      newErrors.classLevel = "Class level is required";
-    if (!formData.subject.trim()) newErrors.subject = "Subject is required";
-    if (!formData.title.trim()) newErrors.title = "Course title is required";
-    if (
-      formData.price === null ||
-      formData.price === undefined ||
-      formData.price <= 0
-    ) {
-      newErrors.price = "Price must be greater than 0";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const validateStep2 = () => {
-    const newErrors = {};
-    if (!formData.duration.trim()) newErrors.duration = "Duration is required";
-    if (!formData.courseLevel.trim())
-      newErrors.courseLevel = "Course level is required";
-    if (!formData.description.trim())
-      newErrors.description = "Description is required";
-    else if (formData.description.length < 50)
-      newErrors.description = "Description should be at least 50 characters";
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const validateStep3 = () => {
-    const newErrors = {};
-
-    // Validate syllabus
-    syllabus.forEach((item, index) => {
-      if (!item.title.trim()) {
-        newErrors[`syllabus_title_${index}`] = `Section ${
-          index + 1
-        } title is required`;
-      }
-      if (!item.description.trim()) {
-        newErrors[`syllabus_description_${index}`] = `Section ${
-          index + 1
-        } description is required`;
-      }
-    });
-
-    // Validate chapters and lessons
-    chapters.forEach((chapter, chapterIndex) => {
-      if (!chapter.title.trim()) {
-        newErrors[`chapter_title_${chapterIndex}`] = `Chapter ${
-          chapterIndex + 1
-        } title is required`;
-      }
-
-      chapter.lessons.forEach((lesson, lessonIndex) => {
-        if (!lesson.title.trim()) {
-          newErrors[`lesson_title_${chapterIndex}_${lessonIndex}`] = `Lesson ${
-            lessonIndex + 1
-          } in Chapter ${chapterIndex + 1} title is required`;
-        }
-
-        if (lesson.videoType === "youtube" && !lesson.videoUrl.trim()) {
-          newErrors[`lesson_video_${chapterIndex}_${lessonIndex}`] = `Lesson ${
-            lessonIndex + 1
-          } in Chapter ${chapterIndex + 1} YouTube URL is required`;
-        }
-
-        if (
-          lesson.videoType === "upload" &&
-          !lesson.video &&
-          !lesson.videoUrl
-        ) {
-          newErrors[`lesson_video_${chapterIndex}_${lessonIndex}`] = `Lesson ${
-            lessonIndex + 1
-          } in Chapter ${chapterIndex + 1} video is required`;
-        }
-      });
-    });
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -1242,6 +923,11 @@ const UpdateCourseModal = ({ course, isOpen, onClose }) => {
         updatedData.append("lessonVideoMappings", JSON.stringify(lessonVideoMappings));
       }
 
+      // Send thumbnail removal flag if requested
+      if (removeThumbnail) {
+        updatedData.append("removeThumbnail", "true");
+      }
+
       // Append syllabus
       updatedData.append("syllabus", JSON.stringify(syllabus));
 
@@ -1558,12 +1244,22 @@ const UpdateCourseModal = ({ course, isOpen, onClose }) => {
               />
               <label
                 htmlFor="thumbnail-upload"
-                className="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+                className="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 mr-2"
               >
                 Change Thumbnail
               </label>
+              <button
+                type="button"
+                onClick={() => {
+                  setRemoveThumbnail(true);
+                  setFormData((prev) => ({ ...prev, thumbnailPreview: "", thumbnail: null }));
+                }}
+                className="bg-red-500 text-white px-3 py-2 rounded-lg hover:bg-red-600"
+              >
+                Remove Thumbnail
+              </button>
               <p className="text-sm text-gray-500 mt-2">
-                Click to upload new thumbnail image
+                Click to upload new thumbnail image or remove existing
               </p>
             </div>
           </div>
@@ -2197,130 +1893,23 @@ const UpdateCourseModal = ({ course, isOpen, onClose }) => {
         <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex justify-between items-center">
           <div>
             <h2 className="text-2xl font-bold text-gray-900">Edit Course</h2>
-            <p className="text-sm text-gray-600">
-              Update your course details and content
-            </p>
+            <p className="text-sm text-gray-600">Update your course details and content</p>
           </div>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 p-2 transition-colors"
-          >
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 p-2 transition-colors">
             <FaTimes size={24} />
           </button>
         </div>
 
-        {/* Progress Steps */}
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex items-center justify-between">
-            {[1, 2, 3, 4].map((step) => (
-              <div key={step} className="flex items-center">
-                <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all ${
-                    currentStep >= step
-                      ? "bg-blue-600 text-white shadow-md"
-                      : "bg-gray-300 text-gray-600"
-                  }`}
-                >
-                  {step}
-                </div>
-                {step < 4 && (
-                  <div
-                    className={`w-16 h-1 mx-2 transition-colors ${
-                      currentStep > step ? "bg-blue-600" : "bg-gray-300"
-                    }`}
-                  />
-                )}
-              </div>
-            ))}
-          </div>
-          <div className="flex justify-between mt-3 text-sm">
-            <span
-              className={
-                currentStep >= 1 ? "text-blue-600 font-medium" : "text-gray-500"
-              }
-            >
-              Basics
-            </span>
-            <span
-              className={
-                currentStep >= 2 ? "text-blue-600 font-medium" : "text-gray-500"
-              }
-            >
-              Details
-            </span>
-            <span
-              className={
-                currentStep >= 3 ? "text-blue-600 font-medium" : "text-gray-500"
-              }
-            >
-              Content
-            </span>
-            <span
-              className={
-                currentStep >= 4 ? "text-blue-600 font-medium" : "text-gray-500"
-              }
-            >
-              Review
-            </span>
-          </div>
+        <div className="p-6">
+          <CourseForm
+            mode="edit"
+            existingCourse={course}
+            onSuccess={() => {
+              toast.success("Course updated successfully!");
+              onClose();
+            }}
+          />
         </div>
-
-        <form onSubmit={handleSubmit} className="p-6">
-          {currentStep === 1 && renderStep1()}
-          {currentStep === 2 && renderStep2()}
-          {currentStep === 3 && renderStep3()}
-          {currentStep === 4 && renderStep4()}
-
-          <div className="flex flex-col sm:flex-row justify-between gap-3 mt-8 pt-6 border-t border-gray-200">
-            {currentStep > 1 ? (
-              <button
-                type="button"
-                onClick={prevStep}
-                className="flex items-center justify-center gap-2 px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors font-medium"
-              >
-                <FaChevronLeft />
-                Previous
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={onClose}
-                className="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors font-medium"
-              >
-                Cancel
-              </button>
-            )}
-
-            {currentStep < 4 ? (
-              <button
-                type="button"
-                onClick={nextStep}
-                className="flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
-              >
-                Next Step
-                <FaChevronRight />
-              </button>
-            ) : (
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="flex items-center justify-center gap-2 px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isSubmitting ? (
-                  <>
-                    <FaSpinner className="animate-spin" />
-                    Updating...
-                  </>
-                ) : (
-                  <>
-                    <FaCheckCircle />
-                    Update Course
-                  </>
-                )}
-              </button>
-            )}
-          </div>
-        </form>
       </div>
     </div>
   );

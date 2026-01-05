@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createCourse } from "../redux/courseSlice";
+import { createCourse, updateCourse } from "../redux/courseSlice";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
@@ -33,7 +33,7 @@ import {
   FaLayerGroup,
 } from "react-icons/fa";
 
-const CourseForm = () => {
+const CourseForm = ({ mode = "create", existingCourse = null, onSuccess = () => {} }) => {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.courses);
   const navigate = useNavigate();
@@ -50,9 +50,17 @@ const CourseForm = () => {
     courseLevel: "",
     certificationAvailable: false,
     thumbnail: null,
+    thumbnailPreview: "",
     language: "English",
     targetAudience: "",
   });
+
+  // Edit mode helpers
+  const [existingCourseNotes, setExistingCourseNotes] = useState([]);
+  const [removedCourseNoteIds, setRemovedCourseNoteIds] = useState([]);
+  const [existingPreviousPapers, setExistingPreviousPapers] = useState([]);
+  const [removedPreviousPaperIds, setRemovedPreviousPaperIds] = useState([]);
+  const [removeThumbnail, setRemoveThumbnail] = useState(false);
 
   const [chapters, setChapters] = useState([]);
   const [expandedChapters, setExpandedChapters] = useState({});
@@ -85,6 +93,16 @@ const CourseForm = () => {
       prev.map((n, i) => (i === idx ? { ...n, file } : n))
     );
     toast.success(`Course note "${file.name}" selected`);
+  };
+
+  const removeExistingCourseNote = (noteId) => {
+    setExistingCourseNotes((prev) => prev.filter((n) => String(n._id) !== String(noteId)));
+    setRemovedCourseNoteIds((prev) => [...prev, String(noteId)]);
+  };
+
+  const removeExistingPreviousPaper = (paperId) => {
+    setExistingPreviousPapers((prev) => prev.filter((p) => String(p._id) !== String(paperId)));
+    setRemovedPreviousPaperIds((prev) => [...prev, String(paperId)]);
   };
   const handleCoursePdfChange = (type, file) => {
     if (!file) return;
@@ -238,24 +256,85 @@ const CourseForm = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [currentStep]);
 
+  // If in edit mode, prefill the form when existingCourse is provided
+  useEffect(() => {
+    if (mode === "edit" && existingCourse) {
+      // Debug: ensure existingCourse is provided
+      console.debug("CourseForm: prefill with existingCourse:", existingCourse && existingCourse._id);
+
+      setFormData((prev) => ({
+        ...prev,
+        title: existingCourse.title || "",
+        description: existingCourse.description || "",
+        classLevel: existingCourse.classLevel || "",
+        subject: existingCourse.subject || "",
+        board: existingCourse.board || "JKBOSE",
+        // Preserve 0 price (free courses) when pre-filling
+        price: existingCourse.price !== undefined && existingCourse.price !== null ? existingCourse.price : "",
+        duration: existingCourse.duration || "",
+        prerequisites: existingCourse.prerequisites || "",
+        courseLevel: existingCourse.courseLevel || "",
+        certificationAvailable: existingCourse.certificationAvailable || false,
+        thumbnail: null,
+        thumbnailPreview: existingCourse.thumbnail || "",
+        language: existingCourse.language || "English",
+        targetAudience: existingCourse.targetAudience || "",
+      }));
+
+      // populate chapters (convert older flat lessons into a default chapter)
+      const existingChapters = existingCourse.chapters && existingCourse.chapters.length > 0
+        ? existingCourse.chapters
+        : (existingCourse.lessons ? [{ title: "Course Content", description: "", lessons: existingCourse.lessons.map(lesson => ({
+            title: lesson.title,
+            description: lesson.description || "",
+            videoType: lesson.videoUrl?.includes("youtube") ? "youtube" : "upload",
+            videoUrl: lesson.videoUrl || "",
+            isFreePreview: lesson.isFreePreview || false,
+            duration: lesson.duration || "",
+            notes: null,
+            _id: lesson._id,
+          })) }] : []);
+
+      setChapters(existingChapters);
+      setSyllabus(existingCourse.syllabus || []);
+
+      // existing course notes and previous papers
+      setExistingCourseNotes(existingCourse.courseNotes || []);
+      setExistingPreviousPapers(existingCourse.previousPapers || []);
+
+      // reset removed lists
+      setRemovedCourseNoteIds([]);
+      setRemovedPreviousPaperIds([]);
+
+      setCurrentStep(1);
+      setErrors({});
+    }
+  }, [mode, existingCourse]);
+
   // Validation functions for each step
   const validateStep1 = () => {
     const newErrors = {};
 
-    if (!formData.classLevel.trim()) {
+    const classLevelStr = (formData.classLevel || "").toString();
+    const subjectStr = (formData.subject || "").toString();
+    const titleStr = (formData.title || "").toString();
+    const priceStr = formData.price !== null && formData.price !== undefined ? String(formData.price) : "";
+
+    if (!classLevelStr.trim()) {
       newErrors.classLevel = "Class level is required";
     }
-    if (!formData.subject.trim()) {
+    if (!subjectStr.trim()) {
       newErrors.subject = "Subject is required";
     }
-    if (!formData.title.trim()) {
+    if (!titleStr.trim()) {
       newErrors.title = "Course title is required";
-    } else if (formData.title.length < 10) {
+    } else if (mode === "create" && titleStr.length < 10) {
+      // Enforce min title length for new courses only
       newErrors.title = "Title should be at least 10 characters";
     }
-    if (!formData.price.trim()) {
+    if (!priceStr.trim()) {
       newErrors.price = "Price is required";
-    } else if (parseFloat(formData.price) < 0) {
+    } else if (isNaN(parseFloat(priceStr)) || parseFloat(priceStr) < 0) {
       newErrors.price = "Price cannot be negative";
     }
 
@@ -277,8 +356,16 @@ const CourseForm = () => {
     } else if (formData.description.length < 50) {
       newErrors.description = "Description should be at least 50 characters";
     }
-    if (!formData.thumbnail) {
-      newErrors.thumbnail = "Thumbnail is required";
+    // Thumbnail required: allow existing preview in edit mode unless user requested removal
+    if (mode === "create") {
+      if (!formData.thumbnail) {
+        newErrors.thumbnail = "Thumbnail is required";
+      }
+    } else {
+      // edit mode
+      if (removeThumbnail || (!formData.thumbnail && !formData.thumbnailPreview)) {
+        newErrors.thumbnail = "Thumbnail is required";
+      }
     }
 
     setErrors(newErrors);
@@ -788,6 +875,19 @@ const CourseForm = () => {
       courseData.append("courseNotesMeta", JSON.stringify(meta));
     }
 
+    // Append removed course notes IDs (edit mode)
+    if (mode === "edit") {
+      if (removedCourseNoteIds.length > 0) {
+        courseData.append("removedCourseNoteIds", JSON.stringify(removedCourseNoteIds));
+      }
+      if (removedPreviousPaperIds.length > 0) {
+        courseData.append("removedPreviousPaperIds", JSON.stringify(removedPreviousPaperIds));
+      }
+      if (removeThumbnail) {
+        courseData.append("removeThumbnail", "true");
+      }
+    }
+
     // Append previous year papers (multiple)
     if (previousPapersList.length > 0) {
       const meta = previousPapersList.map((n) => ({ title: n.title || "" }));
@@ -797,32 +897,35 @@ const CourseForm = () => {
       courseData.append("previousPapersMeta", JSON.stringify(meta));
     }
     try {
-      await dispatch(createCourse(courseData)).unwrap();
-      toast.success(
-        <div>
-          <div className="flex items-center">
-            <FaCheckCircle className="text-green-500 mr-2" />
-            <span className="font-semibold">
-              Course Created Successfully! 🎉
-            </span>
-          </div>
-          <p className="text-sm mt-1">
-            Your course is now under review. You'll be notified once approved.
-          </p>
-        </div>,
-        { autoClose: 5000 }
-      );
-      setTimeout(() => {
-        navigate("/profile");
-      }, 2000);
+      if (mode === "create") {
+        await dispatch(createCourse(courseData)).unwrap();
+        toast.success(
+          <div>
+            <div className="flex items-center">
+              <FaCheckCircle className="text-green-500 mr-2" />
+              <span className="font-semibold">Course Created Successfully! 🎉</span>
+            </div>
+            <p className="text-sm mt-1">Your course is now under review. You'll be notified once approved.</p>
+          </div>,
+          { autoClose: 5000 }
+        );
+        setTimeout(() => {
+          navigate("/profile");
+        }, 2000);
+      } else {
+        // Edit mode: send PUT to update course
+        const courseId = existingCourse?._id;
+        if (!courseId) throw new Error("No course id provided for edit mode");
+        await dispatch(updateCourse({ courseId, updatedData: courseData })).unwrap();
+        toast.success("Course updated successfully! 🎉");
+        onSuccess();
+      }
     } catch (err) {
-      console.error("Course creation error:", err);
+      console.error("Course submission error:", err);
       toast.error(
         <div>
-          <div className="font-semibold">Failed to Create Course</div>
-          <p className="text-sm mt-1">
-            {err.message || "Please try again later"}
-          </p>
+          <div className="font-semibold">Failed to submit course</div>
+          <p className="text-sm mt-1">{err.message || "Please try again later"}</p>
         </div>,
         { autoClose: 5000 }
       );
@@ -1288,7 +1391,7 @@ const CourseForm = () => {
             type="file"
             name="thumbnail"
             accept="image/*"
-            onChange={handleFileChange}
+            onChange={(e) => { handleFileChange(e); setRemoveThumbnail(false); }}
             className="hidden"
             id="thumbnail"
             required
@@ -1305,6 +1408,14 @@ const CourseForm = () => {
               <p className="text-green-600 text-sm mt-2">
                 ✓ {formData.thumbnail.name}
               </p>
+            )}
+            {!formData.thumbnail && formData.thumbnailPreview && (
+              <div className="mt-2 flex items-center gap-2">
+                <p className="text-sm text-gray-600">Current thumbnail</p>
+                <button type="button" onClick={() => { setRemoveThumbnail(true); setFormData(prev => ({ ...prev, thumbnailPreview: "", thumbnail: null })); }} className="text-red-500 p-1 rounded">
+                  <FaTrash /> Remove
+                </button>
+              </div>
             )}
           </label>
         </div>
@@ -1402,6 +1513,30 @@ const CourseForm = () => {
           ))}
         </div>
 
+        {/* Show existing course documents (edit mode) */}
+        {mode === "edit" && existingCourse && (
+          <div className="mb-4">
+            <h5 className="text-md font-semibold mb-2">Existing Course Documents</h5>
+            <div className="space-y-2">
+              {existingCourse.courseDocuments?.syllabusPdf && (
+                <div className="flex items-center gap-3">
+                  <a href={existingCourse.courseDocuments.syllabusPdf} target="_blank" rel="noreferrer" className="text-blue-600 underline text-sm">Syllabus PDF</a>
+                </div>
+              )}
+              {existingCourse.courseDocuments?.notesPdf && (
+                <div className="flex items-center gap-3">
+                  <a href={existingCourse.courseDocuments.notesPdf} target="_blank" rel="noreferrer" className="text-blue-600 underline text-sm">Notes PDF</a>
+                </div>
+              )}
+              {existingCourse.courseDocuments?.previousPapersPdf && (
+                <div className="flex items-center gap-3">
+                  <a href={existingCourse.courseDocuments.previousPapersPdf} target="_blank" rel="noreferrer" className="text-blue-600 underline text-sm">Previous Papers PDF</a>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Multiple course-level notes UI */}
         <div className="mt-6 mb-6">
           <div className="flex items-center justify-between mb-3">
@@ -1414,6 +1549,23 @@ const CourseForm = () => {
               <FaPlus className="mr-2" /> Add Note
             </button>
           </div>
+
+          <div className="mb-3">
+          {existingCourseNotes.length > 0 && (
+            <div className="mb-2">
+              <h6 className="text-sm font-medium">Existing Course Notes</h6>
+              {existingCourseNotes.map((note) => (
+                <div key={note._id} className="flex items-center gap-3 mb-2">
+                  <a href={note.url} target="_blank" rel="noreferrer" className="text-blue-600 underline text-sm">
+                    {note.title || "Note"}
+                  </a>
+                  <button type="button" onClick={() => removeExistingCourseNote(note._id)} className="text-red-500 p-1">
+                    <FaTrash />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
 
           {courseNotesList.length === 0 ? (
             <p className="text-sm text-gray-500">No additional notes added.</p>
@@ -1468,6 +1620,7 @@ const CourseForm = () => {
             ))
           )}
         </div>
+        </div>
 
         {/* Previous Year Papers (multiple) */}
         <div className="mt-6 mb-6">
@@ -1481,6 +1634,22 @@ const CourseForm = () => {
               <FaPlus className="mr-2" /> Add Paper
             </button>
           </div>
+
+          {existingPreviousPapers.length > 0 && (
+            <div className="mb-2">
+              <h6 className="text-sm font-medium">Existing Previous Papers</h6>
+              {existingPreviousPapers.map((paper) => (
+                <div key={paper._id} className="flex items-center gap-3 mb-2">
+                  <a href={paper.url} target="_blank" rel="noreferrer" className="text-blue-600 underline text-sm">
+                    {paper.title || "Paper"}
+                  </a>
+                  <button type="button" onClick={() => removeExistingPreviousPaper(paper._id)} className="text-red-500 p-1">
+                    <FaTrash />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
 
           {previousPapersList.length === 0 ? (
             <p className="text-sm text-gray-500">No previous year papers added.</p>
