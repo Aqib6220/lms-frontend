@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCourseById, deleteCourse } from "../redux/courseSlice";
 import { toast } from "react-toastify";
-import UpdateCourseModal from "./UpdateCourseModal";
+import UpdateCourseModal from "./UpdateCourseModal2";
 import {
   FaEdit,
   FaTrash,
